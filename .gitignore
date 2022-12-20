@@ -1,0 +1,8 @@
+*.o
+*.a
+*.out
+*.so
+*.d
+host/mallocator
+/.vscode
+/.vscode/*
