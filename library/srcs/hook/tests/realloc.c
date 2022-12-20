@@ -16,8 +16,8 @@ void EXPORT *realloc(void *ptr, size_t size)
 	get_backtrace(shared_memory->backtrace);
 	if (should_block(shared_memory->backtrace))
 	{
-		errno = ENOMEM;
 		enable_hooks();
+		errno = ENOMEM;
 		return NULL;
 	}
 	void *save_result = ptr;

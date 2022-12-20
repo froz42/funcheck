@@ -21,8 +21,8 @@ int pthread_create(pthread_t *restrict thread,
     get_backtrace(shared_memory->backtrace);
     if (should_block(shared_memory->backtrace))
     {
-        enable_hooks();
         errno = EAGAIN;
+        enable_hooks();
         return EAGAIN;
     }
     int save_result = original_function(thread, attr, start_routine, arg);
