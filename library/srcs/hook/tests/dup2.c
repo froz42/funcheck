@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <unistd.h>
 #include "../hook.h"
 #include "../../utils/export.h"
@@ -15,6 +16,7 @@ int EXPORT dup2(int oldfd, int newfd)
     get_backtrace(shared_memory->backtrace);
     if (should_block(shared_memory->backtrace))
     {
+        errno = EAGAIN;
         enable_hooks();
         return -1;
     }
