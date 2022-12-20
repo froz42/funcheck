@@ -1,5 +1,4 @@
 #include <errno.h>
-#include <dlfcn.h>
 #include "../hook.h"
 #include "../../utils/export.h"
 #include "../../events/event_sender.h"

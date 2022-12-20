@@ -1,6 +1,5 @@
 #include <fcntl.h>
 #include <errno.h>
-#include <dlfcn.h>
 #include <stdarg.h>
 #include "../hook.h"
 #include "../../utils/export.h"
