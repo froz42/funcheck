@@ -31,6 +31,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/tests/open.c \
 			hook/tests/mmap.c \
 			hook/tests/pthread_create.c \
+			hook/tests/dup.c \
 			function_search/function_search.c \
 			shared_memory/shared_memory.c \
 			env/clean_env.c \
