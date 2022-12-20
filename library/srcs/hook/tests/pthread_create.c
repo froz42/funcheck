@@ -25,9 +25,8 @@ int pthread_create(pthread_t *restrict thread,
         enable_hooks();
         return EAGAIN;
     }
-    int save_result = original_function(thread, attr, start_routine, arg);
     send_function_call_event(shared_memory);
     enable_hooks();
     
-    return save_result;
+    return original_function(thread, attr, start_routine, arg);
 }

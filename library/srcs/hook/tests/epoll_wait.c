@@ -20,9 +20,8 @@ int EXPORT epoll_wait(int epfd, struct epoll_event *events, int maxevents, int t
         enable_hooks();
         return -1;
     }
-    int save_result = original_function(epfd, events, maxevents, timeout);
     send_function_call_event(shared_memory);
     enable_hooks();
 
-    return save_result;
+    return original_function(epfd, events, maxevents, timeout);
 }

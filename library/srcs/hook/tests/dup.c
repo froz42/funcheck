@@ -20,9 +20,8 @@ int EXPORT dup(int oldfd)
         enable_hooks();
         return -1;
     }
-    int save_result = original_function(oldfd);
     send_function_call_event(shared_memory);
     enable_hooks();
 
-    return save_result;
+    return original_function(oldfd);
 }

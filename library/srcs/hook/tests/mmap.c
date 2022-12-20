@@ -23,9 +23,8 @@ void EXPORT *mmap(void *addr, size_t len, int prot, int flags,
         enable_hooks();
         return MAP_FAILED;
     }
-    void *save_result = original_function(addr, len, prot, flags, fildes, off);
     send_function_call_event(shared_memory);
     enable_hooks();
 
-    return save_result;
+    return original_function(addr, len, prot, flags, fildes, off);
 }

@@ -20,9 +20,8 @@ int EXPORT epoll_create(int size)
         enable_hooks();
         return -1;
     }
-    int save_result = original_function(size);
     send_function_call_event(shared_memory);
     enable_hooks();
 
-    return save_result;
+    return original_function(size);
 }

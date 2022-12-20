@@ -25,8 +25,7 @@ int EXPORT open(const char * pathname, int flags, ...)
         enable_hooks();
         return -1;
     }
-    int save_result = original_function(pathname, flags, mode);
     send_function_call_event(shared_memory);
     enable_hooks();
-    return save_result;
+    return original_function(pathname, flags, mode);
 }
