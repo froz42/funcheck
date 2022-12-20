@@ -37,6 +37,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/tests/epoll_wait.c \
 			hook/tests/execve.c \
 			hook/tests/fork.c \
+			hook/tests/getpid.c \
 			function_search/function_search.c \
 			shared_memory/shared_memory.c \
 			env/clean_env.c \
