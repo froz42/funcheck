@@ -50,9 +50,9 @@ void add_allocation(
     btree_t_allocation_insert(&node->value.allocations, &allocation);
 }
 
-void clear_functions(btree_t_function_call_footprint **allocation_tree)
+void clear_functions(btree_t_function_call_footprint **function_tree)
 {
-    btree_t_function_call_footprint_clear(allocation_tree, clear_btree_t_function_call_footprint);
+    btree_t_function_call_footprint_clear(function_tree, clear_btree_t_function_call_footprint);
 }
 
 static void *_ptr_to_free = NULL;
@@ -63,8 +63,8 @@ static void remove_allocation_from_tree(t_function_call_footprint *info)
     btree_t_allocation_delete(&info->allocations, &allocation);
 }
 
-void remove_allocation(btree_t_function_call_footprint **allocation_tree, void *ptr)
+void remove_allocation(btree_t_function_call_footprint **function_tree, void *ptr)
 {
     _ptr_to_free = ptr;
-    btree_t_function_call_footprint_foreach(*allocation_tree, remove_allocation_from_tree);
+    btree_t_function_call_footprint_foreach(*function_tree, remove_allocation_from_tree);
 }

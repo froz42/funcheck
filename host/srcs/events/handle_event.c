@@ -55,18 +55,18 @@ static void *handle_events_routine(t_handle_event_params *params)
         case FUNCTION_CALL:
             handle_function_call(
                 params->symbolizer,
-                params->allocation_tree,
+                params->function_tree,
                 params->shared_memory);
             break;
         case ALLOC:
             handle_alloc(
                 params->symbolizer,
-                params->allocation_tree,
+                params->function_tree,
                 params->shared_memory);
             break;
         case REMOVE_ALLOC:
             handle_free(
-                params->allocation_tree,
+                params->function_tree,
                 params->shared_memory);
             break;
         default:

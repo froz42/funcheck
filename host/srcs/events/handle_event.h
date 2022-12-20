@@ -6,7 +6,7 @@
 #include <pthread.h>
 
 typedef struct {
-    btree_t_function_call_footprint **allocation_tree;
+    btree_t_function_call_footprint **function_tree;
     t_shared_info *shared_memory;
     t_symbolizer *symbolizer;
 } t_handle_event_params;

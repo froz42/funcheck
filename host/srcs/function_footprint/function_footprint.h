@@ -41,9 +41,9 @@ btree_t_function_call_footprint *add_function_call(
     t_shared_info *shared_infos);
 void add_allocation(
     t_symbolizer *symbolizer,
-    btree_t_function_call_footprint **allocation_tree,
+    btree_t_function_call_footprint **function_tree,
     t_shared_info *shared_infos);
-void clear_functions(btree_t_function_call_footprint **allocation_tree);
-void remove_allocation(btree_t_function_call_footprint **allocation_tree, void *ptr);
+void clear_functions(btree_t_function_call_footprint **function_tree);
+void remove_allocation(btree_t_function_call_footprint **function_tree, void *ptr);
 
 #endif

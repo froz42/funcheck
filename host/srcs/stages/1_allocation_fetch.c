@@ -57,7 +57,7 @@ t_fetch_result allocation_fetch(
     launch_record(&record_stdin);
 
     t_handle_event_params params = {
-        .allocation_tree = &result.allocation_tree,
+        .function_tree = &result.function_tree,
         .shared_memory = setup_result.shared_memory,
         .symbolizer = symbolizer,
     };
@@ -83,18 +83,18 @@ t_fetch_result allocation_fetch(
     {
         force_stop_record(&record_stdin);
         free(record_stdin.record);
-        clear_functions(&result.allocation_tree);
+        clear_functions(&result.function_tree);
         exit(EXIT_FAILURE);
     }
     force_stop_record(&record_stdin);
     result.stdin_record = record_stdin.record;
-    check_leaks(result.allocation_tree);
+    check_leaks(result.function_tree);
     free_setup_result(setup_result);
     return result;
 }
 
 void clear_fetch_result(t_fetch_result *result)
 {
-    clear_functions(&result->allocation_tree);
+    clear_functions(&result->function_tree);
     free(result->stdin_record);
 }

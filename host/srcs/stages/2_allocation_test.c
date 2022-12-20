@@ -64,7 +64,7 @@ static void write_to_fd(int fd, char *str)
 
 void test_allocation(t_function_call_footprint *allocation_info)
 {
-    btree_t_function_call_footprint *allocations_tree = NULL;
+    btree_t_function_call_footprint *function_tree = NULL;
     int stdin_pipe[2];
     int stdout_pipe[2];
     int stderr_pipe[2];
@@ -129,7 +129,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     }
 
     t_handle_event_params params = {
-        .allocation_tree = &allocations_tree,
+        .function_tree = &function_tree,
         .shared_memory = setup_result.shared_memory,
         .symbolizer = _symbolizer,
     };
@@ -166,7 +166,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
             free(record_stdout.record);
             free(record_stderr.record);
         }
-        clear_functions(&allocations_tree);
+        clear_functions(&function_tree);
         exit(EXIT_FAILURE);
     }
     stop_handle_events(event_thread, setup_result.shared_memory);
@@ -182,7 +182,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
             free(record_stderr.record);
             _should_exit_fail = 1;
         }
-        clear_functions(&allocations_tree);
+        clear_functions(&function_tree);
         free_setup_result(setup_result);
         return;
     }
@@ -193,8 +193,8 @@ void test_allocation(t_function_call_footprint *allocation_info)
         free(record_stdout.record);
         free(record_stderr.record);
     }
-    check_leaks(allocations_tree);
-    clear_functions(&allocations_tree);
+    check_leaks(function_tree);
+    clear_functions(&function_tree);
     free_setup_result(setup_result);
 }
 
@@ -211,8 +211,8 @@ void allocation_test(
     _symbolizer = symbolizer;
     _stdin_record = fetch_result->stdin_record;
     _alloction_test_count = 0;
-    _alloction_test_total_size = btree_t_function_call_footprint_size(fetch_result->allocation_tree);
-    btree_t_function_call_footprint_foreach(fetch_result->allocation_tree, test_allocation);
+    _alloction_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
+    btree_t_function_call_footprint_foreach(fetch_result->function_tree, test_allocation);
     if (_should_exit_fail)
         exit(EXIT_FAILURE);
 }
