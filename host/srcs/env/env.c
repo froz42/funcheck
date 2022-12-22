@@ -6,7 +6,7 @@
 
 /**
  * @brief This function generate a unique memory name to be used by shm_open
- * 
+ *
  * @return char* the name of the memory
  */
 char *generate_memory_name(void)
@@ -16,13 +16,13 @@ char *generate_memory_name(void)
 	char *name = malloc(sizeof(char) * 64);
 	if (name == NULL)
 		return NULL;
-	sprintf(name, "/funcheck_%d_%ld_%i", getpid(), time(NULL), i++);\
+	snprintf(name, 64, "/funcheck_%d_%ld_%i", getpid(), time(NULL), i++);
 	return name;
 }
 
 /**
  * @brief Generate a env variable key=value
- * 
+ *
  * @param key the key of the env variable
  * @param value the value of the env variable
  * @return char* the env variable
@@ -38,7 +38,7 @@ char *generate_env_string(char *key, char *value)
 
 /**
  * @brief This function generate envp for the child process
- * 
+ *
  * @param base_envp the base envp passed to the main function
  * @param to_add the env variable to add
  * @return char** the new envp
