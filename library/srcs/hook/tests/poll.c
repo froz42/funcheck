@@ -3,7 +3,6 @@
 #include "../hook.h"
 #include "../../utils/export.h"
 #include "../../events/event_sender.h"
-#include "../../events/event_sender.h"
 #include "../../function_search/function_search.h"
 
 int EXPORT poll(struct pollfd fds[], nfds_t nfds, int timeout)

@@ -2,7 +2,6 @@
 #include "../hook.h"
 #include "../../utils/export.h"
 #include "../../events/event_sender.h"
-#include "../../events/event_sender.h"
 #include "../../function_search/function_search.h"
 
 void EXPORT *malloc(size_t size)
