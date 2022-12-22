@@ -8,18 +8,27 @@ static char *get_library_path(void)
     static char path[1024];
     char *exec_path = realpath("/proc/self/exe", NULL);
     if (exec_path == NULL)
-        return NULL;
+    {
+        dprintf(2, "Error: could not find the execution path\n");
+        exit(1);
+    }
     // remove the executable name
     char *last_slash = strrchr(exec_path, '/');
     if (last_slash == NULL)
-        return NULL;
+    {
+        dprintf(2, "Error: could not find the library path\n");
+        exit(1);
+    }
     *last_slash = '\0';
     // add the library path
     snprintf(path, sizeof(path), "%s/../library/libfuncheck.so", exec_path);
     free(exec_path);
     char *real_path = realpath(path, NULL);
     if (real_path == NULL)
-        return NULL;
+    {
+        dprintf(2, "Error: could not find the library path\n");
+        exit(1);
+    }
     return real_path;
 }
 
