@@ -44,6 +44,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/tests/sigaction.c \
 			hook/tests/signal.c \
 			hook/tests/socket.c \
+			hook/tests/realpath.c \
 			function_search/function_search.c \
 			shared_memory/shared_memory.c \
 			env/clean_env.c \
