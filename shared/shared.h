@@ -3,7 +3,7 @@
 
 #include <semaphore.h>
 
-#define ENV_MEMORY_NAME "MALLOCATOR_MEMORY_NAME"
+#define ENV_MEMORY_NAME "funcheck_MEMORY_NAME"
 
 typedef enum e_runtype
 {

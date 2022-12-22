@@ -3,6 +3,6 @@
 *.out
 *.so
 *.d
-host/mallocator
+host/funcheck
 /.vscode
 /.vscode/*

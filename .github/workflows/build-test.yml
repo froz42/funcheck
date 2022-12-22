@@ -13,49 +13,49 @@ on:
 # keep it in cache
 
 jobs:
-  build-libmallocator:
-    name: Build libmallocator
+  build-libfuncheck:
+    name: Build libfuncheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Make lib
         run: make -C library
-      - name: Upload libmallocator.so
+      - name: Upload libfuncheck.so
         uses: actions/upload-artifact@v3
         with:
-          name: libmallocator.so
-          path: library/libmallocator.so
+          name: libfuncheck.so
+          path: library/libfuncheck.so
 
-  build-mallocator:
-    name: Build mallocator
+  build-funcheck:
+    name: Build funcheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Make host
         run: make -C host
-      - name: Upload mallocator
+      - name: Upload funcheck
         uses: actions/upload-artifact@v3
         with:
-          name: mallocator
-          path: host/mallocator
+          name: funcheck
+          path: host/funcheck
 
   test:
     name: Run tests
     runs-on: ubuntu-latest
-    needs: [build-libmallocator, build-mallocator]
+    needs: [build-libfuncheck, build-funcheck]
     steps:
       - uses: actions/checkout@v3
-      - name: Get libmallocator.so
+      - name: Get libfuncheck.so
         uses: actions/download-artifact@v3
         with:
-          name: libmallocator.so
+          name: libfuncheck.so
           path: library
-      - name: Get mallocator
+      - name: Get funcheck
         uses: actions/download-artifact@v3
         with:
-          name: mallocator
+          name: funcheck
           path: host
       - name: enable execution
-        run: chmod +x host/mallocator
+        run: chmod +x host/funcheck
       - name: Run tests
         run: cd tests/ && bash ./launch_test.sh

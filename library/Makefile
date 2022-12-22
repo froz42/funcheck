@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= libmallocator.so
+NAME	= libfuncheck.so
 CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g -fPIC -fvisibility=hidden
 DFLAGS	= -MMD -MF $(@:.o=.d)

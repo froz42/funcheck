@@ -18,7 +18,7 @@ do
         continue
     fi
 
-    mallocator ./test &> /dev/null
+    funcheck ./test &> /dev/null
     if [ $? -ne 0 ]
     then
         printf "${GREEN}${BOLD}OK${NC}\n"

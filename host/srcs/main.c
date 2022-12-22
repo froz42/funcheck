@@ -19,7 +19,7 @@
  */
 void print_header(int argc, char **argv)
 {
-	printf("-------------------- Mallocator v2 indev --------------------\n");
+	printf("-------------------- funcheck v2 indev --------------------\n");
 	printf("Command line: ");
 	for (int i = 0; i < argc; i++)
 		printf("%s ", argv[i]);

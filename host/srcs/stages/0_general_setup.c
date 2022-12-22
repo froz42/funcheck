@@ -15,7 +15,7 @@ static char *get_library_path(void)
         return NULL;
     *last_slash = '\0';
     // add the library path
-    snprintf(path, sizeof(path), "%s/../library/libmallocator.so", exec_path);
+    snprintf(path, sizeof(path), "%s/../library/libfuncheck.so", exec_path);
     free(exec_path);
     char *real_path = realpath(path, NULL);
     if (real_path == NULL)

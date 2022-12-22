@@ -12,11 +12,11 @@
 char *generate_memory_name(void)
 {
 	static int i = 0;
-	// the format will be mallocator_<pid>_<timestamp>_<iteration>
+	// the format will be funcheck_<pid>_<timestamp>_<iteration>
 	char *name = malloc(sizeof(char) * 64);
 	if (name == NULL)
 		return NULL;
-	sprintf(name, "/mallocator_%d_%ld_%i", getpid(), time(NULL), i++);\
+	sprintf(name, "/funcheck_%d_%ld_%i", getpid(), time(NULL), i++);\
 	return name;
 }
 
