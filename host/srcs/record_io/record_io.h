@@ -3,19 +3,18 @@
 
 #include <pthread.h>
 
-# define NO_FD -1
+#define NO_FD -1
 
 typedef struct
 {
-    pthread_t   thread_id;
-    char        *record;
-    int         fd_to_read;
-    int         fd_to_write;
+    pthread_t thread_id;
+    int fd_to_read;
+    int fd_to_write;
+    FILE *tmp_file_store;
 } t_record_io;
-
 
 void launch_record(t_record_io *record_param);
 void stop_record(t_record_io *record_param);
-void force_stop_record(t_record_io *record_param);
-
+void write_record_to_fd(int fd, FILE *record);
+void write_record_to_stdout(FILE *record);
 #endif

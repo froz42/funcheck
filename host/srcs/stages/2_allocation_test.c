@@ -14,7 +14,7 @@
 static int _argc = 0;
 static char **_argv = NULL;
 static char **_envp = NULL;
-static char *_stdin_record = NULL;
+static FILE *_tmpfile_stdin = NULL;
 static size_t _alloction_test_count;
 static size_t _alloction_test_total_size;
 static t_symbolizer *_symbolizer = NULL;
@@ -34,32 +34,6 @@ static void config_shared_memory_test(
     // copy backtrace
     for (size_t i = 0; i < allocation_info->backtrace[i].address; i++)
         shared_infos->backtrace[i] = allocation_info->backtrace[i].address;
-}
-
-/**
- * @brief Write the provided str to the fd, line by line with a maximum buffer of 2048
- *
- * @param fd the fd to write to
- * @param str the str to write
- */
-static void write_to_fd(int fd, char *str)
-{
-    // we need to send the string line by line
-    if (str == NULL)
-        return;
-    char *line = strtok(str, "\n");
-    while (line)
-    {
-        size_t len = strlen(line);
-        while (len > 0)
-        {
-            size_t to_write = len > 2048 ? 2048 : len;
-            write(fd, line, to_write);
-            line += to_write;
-            len -= to_write;
-        }
-        line = strtok(NULL, "\n");
-    }
 }
 
 void test_allocation(t_function_call_footprint *allocation_info)
@@ -110,16 +84,36 @@ void test_allocation(t_function_call_footprint *allocation_info)
         .pipe_to_stdout = COPY_PIPE(stdout_pipe),
         .pipe_to_stderr = COPY_PIPE(stderr_pipe),
     };
+
+    FILE *stdout_tmpfile = NULL;
+    FILE *stderr_tmpfile = NULL;
+
+    if (RECORD_OUTPUT)
+    {
+        stdout_tmpfile = tmpfile();
+        if (stdout_tmpfile == NULL)
+        {
+            dprintf(2, "[ERROR] tmpfile failed: %s\n", strerror(errno));
+            exit(1);
+        }
+        stderr_tmpfile = tmpfile();
+        if (stderr_tmpfile == NULL)
+        {
+            dprintf(2, "[ERROR] tmpfile failed: %s\n", strerror(errno));
+            exit(1);
+        }
+    }
+
     t_record_io record_stdout = {
         .fd_to_read = stdout_pipe[0],
         .fd_to_write = NO_FD,
-        .record = NULL,
+        .tmp_file_store = stdout_tmpfile,
     };
 
     t_record_io record_stderr = {
         .fd_to_read = stderr_pipe[0],
         .fd_to_write = NO_FD,
-        .record = NULL,
+        .tmp_file_store = stderr_tmpfile,
     };
 
     if (RECORD_OUTPUT)
@@ -140,17 +134,15 @@ void test_allocation(t_function_call_footprint *allocation_info)
     {
         if (RECORD_OUTPUT)
         {
-            force_stop_record(&record_stdout);
-            force_stop_record(&record_stderr);
-            free(record_stdout.record);
-            free(record_stderr.record);
+            stop_record(&record_stdout);
+            stop_record(&record_stderr);
         }
         exit(EXIT_FAILURE);
     }
     close(stdin_pipe[0]);
     close(stdout_pipe[0]);
     close(stderr_pipe[0]);
-    write_to_fd(stdin_pipe[1], _stdin_record);
+    write_record_to_fd(stdin_pipe[1], _tmpfile_stdin);
     close(stdin_pipe[1]);
     if (RECORD_OUTPUT)
     {
@@ -161,10 +153,8 @@ void test_allocation(t_function_call_footprint *allocation_info)
     {
         if (RECORD_OUTPUT)
         {
-            force_stop_record(&record_stdout);
-            force_stop_record(&record_stderr);
-            free(record_stdout.record);
-            free(record_stderr.record);
+            stop_record(&record_stdout);
+            stop_record(&record_stderr);
         }
         clear_functions(&function_tree);
         exit(EXIT_FAILURE);
@@ -174,12 +164,16 @@ void test_allocation(t_function_call_footprint *allocation_info)
     {
         if (RECORD_OUTPUT)
         {
-            force_stop_record(&record_stdout);
-            force_stop_record(&record_stderr);
-            printf("stderr: \n'\n%s'\n", record_stderr.record);
-            printf("stdout: \n'\n%s'\n", record_stdout.record);
-            free(record_stdout.record);
-            free(record_stderr.record);
+            stop_record(&record_stdout);
+            stop_record(&record_stderr);
+            printf("stderr: \n'\n");
+            write_record_to_stdout(stderr_tmpfile);
+            printf("'\n");
+            printf("stdout: \n'\n");
+            write_record_to_stdout(stdout_tmpfile);
+            printf("'\n");
+            fclose(stdout_tmpfile);
+            fclose(stderr_tmpfile);
             _should_exit_fail = 1;
         }
         clear_functions(&function_tree);
@@ -188,10 +182,10 @@ void test_allocation(t_function_call_footprint *allocation_info)
     }
     if (RECORD_OUTPUT)
     {
-        force_stop_record(&record_stdout);
-        force_stop_record(&record_stderr);
-        free(record_stdout.record);
-        free(record_stderr.record);
+        stop_record(&record_stdout);
+        stop_record(&record_stderr);
+        fclose(stdout_tmpfile);
+        fclose(stderr_tmpfile);
     }
     check_leaks(function_tree);
     clear_functions(&function_tree);
@@ -209,10 +203,11 @@ void allocation_test(
     _argv = argv;
     _envp = envp;
     _symbolizer = symbolizer;
-    _stdin_record = fetch_result->stdin_record;
+    _tmpfile_stdin = fetch_result->tmpfile_stdin;
     _alloction_test_count = 0;
     _alloction_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
     btree_t_function_call_footprint_foreach(fetch_result->function_tree, test_allocation);
+    fclose(_tmpfile_stdin);
     if (_should_exit_fail)
         exit(EXIT_FAILURE);
 }

@@ -48,11 +48,17 @@ t_fetch_result allocation_fetch(
         .pipe_to_stderr = NO_PIPE,
     };
 
+    result.tmpfile_stdin = tmpfile();
+    if (result.tmpfile_stdin == NULL)
+    {
+        dprintf(2, "[ERROR] tmpfile failed\n");
+        exit(1);
+    }
+
     t_record_io record_stdin = {
         .fd_to_read = STDIN_FILENO,
         .fd_to_write = stdin_pipe[1],
-        .record = NULL,
-    };
+        .tmp_file_store = result.tmpfile_stdin};
 
     launch_record(&record_stdin);
 
@@ -68,26 +74,22 @@ t_fetch_result allocation_fetch(
     close(stdin_pipe[0]);
     if (ret < 0)
     {
-        force_stop_record(&record_stdin);
-        free(record_stdin.record);
+        stop_record(&record_stdin);
         exit(EXIT_FAILURE);
     }
     if (waitpid(ret, NULL, 0) < 0)
     {
-        force_stop_record(&record_stdin);
-        free(record_stdin.record);
+        stop_record(&record_stdin);
         exit(EXIT_FAILURE);
     }
     stop_handle_events(event_thread, setup_result.shared_memory);
     if (setup_result.shared_memory->event == CRASH)
     {
-        force_stop_record(&record_stdin);
-        free(record_stdin.record);
+        stop_record(&record_stdin);
         clear_functions(&result.function_tree);
         exit(EXIT_FAILURE);
     }
-    force_stop_record(&record_stdin);
-    result.stdin_record = record_stdin.record;
+    stop_record(&record_stdin);
     check_leaks(result.function_tree);
     free_setup_result(setup_result);
     return result;
@@ -96,5 +98,4 @@ t_fetch_result allocation_fetch(
 void clear_fetch_result(t_fetch_result *result)
 {
     clear_functions(&result->function_tree);
-    free(result->stdin_record);
 }
