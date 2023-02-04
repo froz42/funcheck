@@ -22,9 +22,9 @@ do
     funcheck ./test &> /dev/null
     if [ $? -ne 0 ]
     then
+        exit_code=1
         printf "${RED}${BOLD}KO${NC}\n"
     else
-        exit_code=1
         printf "${GREEN}${BOLD}OK${NC}\n"
     fi
 done
