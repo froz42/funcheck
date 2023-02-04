@@ -17,8 +17,8 @@ typedef struct
 
 typedef struct
 {
-    char *stdin_record;
     btree_t_function_call_footprint *function_tree;
+    FILE *tmpfile_stdin;
 } t_fetch_result;
 
 t_setup_result general_setup(char **envp);
