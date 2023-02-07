@@ -9,6 +9,7 @@
 #include "stages/stages.h"
 #include "symbolizer/symbolizer.h"
 #include "path/path.h"
+#include "config/config.h"
 
 /**
  * @brief Print the header with important information
@@ -42,20 +43,25 @@ int main(int argc, char **argv, char **envp)
 		return 1;
 	}
 
-	int argc_guest = argc - 1;
-	char **argv_guest = argv + 1;
+	args_t args_guest = parse_args(argc, argv);
+	
+	if (args_guest.argc == 0)
+	{
+		printf("No program to run\n");
+		return 1;
+	}
 
-	print_header(argc_guest, argv_guest);
+	print_header(args_guest.argc, args_guest.argv);
 
-	char *program_path = get_program_in_path(argv_guest[0]);
+	char *program_path = get_program_in_path(args_guest.argv[0]);
 
 	t_symbolizer symbolizer = symbolizer_init(program_path);
 
 	t_fetch_result fetch_result = allocation_fetch(
-		argc_guest,
-		argv_guest,
+		args_guest.argc,
+		args_guest.argv,
 		envp, &symbolizer);
-	allocation_test(argc_guest, argv_guest, envp, &fetch_result, &symbolizer);
+	allocation_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
 	clear_fetch_result(&fetch_result);
 
 	symbolizer_stop(&symbolizer);

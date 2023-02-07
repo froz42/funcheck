@@ -18,7 +18,9 @@ DFLAGS	= -MMD -MF $(@:.o=.d)
 LIBFLAG = -lpthread
 
 SRCS_PATH		= ./srcs
-SRCS	= 	main.c\
+SRCS	= 	main.c \
+			config/btree_char_ptr.c \
+			config/parse_args.c \
 			shared_memory/shared_memory.c \
 			run/runner.c logs/logger.c \
 			events/event_utils.c \
