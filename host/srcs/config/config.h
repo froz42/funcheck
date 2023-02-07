@@ -32,5 +32,6 @@ typedef struct
 args_t parse_args(int argc, char **argv);
 config_t *get_config();
 char is_option_set(int mask, const config_t *config);
+void display_help(void);
 
 #endif
