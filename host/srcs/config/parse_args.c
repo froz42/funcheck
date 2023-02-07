@@ -257,7 +257,7 @@ config_t *get_config()
  * @param config the config to check
  * @return char 1 if the option is set, 0 otherwise
  */
-char is_option_set(int mask, config_t *config)
+char is_option_set(int mask, const config_t *config)
 {
     return (config->options & mask) != 0;
 }
