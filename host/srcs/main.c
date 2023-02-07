@@ -39,15 +39,24 @@ int main(int argc, char **argv, char **envp)
 {
 	if (argc < 2)
 	{
-		printf("Usage: %s <program> [args]\n", argv[0]);
+		display_help();
 		return 1;
 	}
 
 	args_t args_guest = parse_args(argc, argv);
+
+	const config_t *config = get_config();
+	
+	if (is_option_set(HELP_MASK, config))
+	{
+		display_help();
+		return 0;
+	}
 	
 	if (args_guest.argc == 0)
 	{
 		printf("No program to run\n");
+		display_help();
 		return 1;
 	}
 

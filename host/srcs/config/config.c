@@ -1,6 +1,9 @@
 #include "config.h"
 #include <stdio.h>
 #include <string.h>
+#include "../utils/color.h"
+
+#define WIDTH_DESC 50
 
 /**
  * @brief Callback to parse an argument
@@ -86,6 +89,53 @@ static const option_t options[] = {
     {'l', "track-leaks", "Track memory leaks", TRACK_LEAK_MASK, NULL},
     {'a', "all-stdout", "Display all the tests output on stdout", ALL_STDOUT_MASK, NULL},
     {0, NULL, NULL, 0, NULL}};
+
+/**
+ * @brief Write desc word by word and if the line is too long, add a new line
+ * 
+ * @param desc The description to write
+ */
+void write_desc(const char *desc)
+{
+    char *saveptr = NULL;
+    char *str = strdup(desc);
+    char *token = strtok_r(str, " ", &saveptr);
+    int len = 0;
+    while (token != NULL)
+    {
+        len += strlen(token) + 1;
+        if (len > WIDTH_DESC)
+        {
+            printf("\n%31s", "");
+            len = strlen(token) + 1;
+        }
+        printf("%s ", token);
+        token = strtok_r(NULL, " ", &saveptr);
+    }
+    printf("\n");
+    free(str);
+}
+
+void display_help(void)
+{
+    printf("\n  %s%sfuncheck%s - a functions calls protection checker\n\n", BOLD, CYAN, RESET);
+    printf("  %s%sUSAGE%s\n\n", WHITE, BOLD, RESET);
+    printf("    %s%s$%s %sfuncheck%s --help\n", CYAN, BOLD, RESET, BOLD, RESET);
+    printf("    %s%s$%s %sfuncheck%s -v\n", CYAN, BOLD, RESET, BOLD, RESET);
+    printf("    %s%s$%s %sfuncheck%s %s./your_program%s [params]\n\n", CYAN, BOLD, RESET, BOLD, RESET, UNDERLINE, RESET);
+
+    printf("    By default, %sfuncheck%s will test all the functions it can find\n", CYAN, RESET);
+    printf("    in the program. You can specify the functions to test with\n");
+    printf("    the %s%s--test-functions%s option or the functions to ignore with\n", BOLD, UNDERLINE, RESET);
+    printf("    the %s%s--ignore-functions%s option.\n\n", BOLD, UNDERLINE, RESET);
+
+    printf("  %s%sOPTIONS%s\n\n", WHITE, BOLD, RESET);
+    for (int i = 0; options[i].name != NULL; i++)
+    {
+        printf("     -%c, --%-20s", options[i].letter, options[i].name);
+        write_desc(options[i].description);
+    }
+}
 
 /**
  * @brief Search an option by its letter
