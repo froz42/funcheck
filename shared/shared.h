@@ -41,6 +41,7 @@ typedef struct s_shared_info
 	t_event event;
 	sem_t lock_guest;
 	sem_t lock_host;
+	char treat_abort_as_crash;
 } t_shared_info;
 
 #endif

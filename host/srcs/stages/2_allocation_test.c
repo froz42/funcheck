@@ -25,6 +25,8 @@ static void config_shared_memory_test(
     t_shared_info *shared_infos,
     t_function_call_footprint *allocation_info)
 {
+    config_t *config = get_config();
+    shared_infos->treat_abort_as_crash = is_option_set(ABORT_AS_CRASH_MASK, config);
     shared_infos->runtype = RUNTYPE_TEST;
     sem_destroy(&shared_infos->lock_host);
     sem_destroy(&shared_infos->lock_guest);
