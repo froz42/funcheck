@@ -87,7 +87,7 @@ static const option_t options[] = {
     {'i', "ignore-functions", "Specify the functions to ignore --ignore-functions='func1 func2 func3' or --ignore-functions 'func1 func2 func3'", 0, parse_ignore_functions},
     {'o', "output", "Specify the output format --output=simple|json|colored", 0, NULL},
     {'l', "track-leaks", "Track memory leaks", TRACK_LEAK_MASK, NULL},
-    {'a', "all-stdout", "Display all the tests output on stdout", ALL_STDOUT_MASK, NULL},
+    {'a', "all-output", "Output stdout and stderr of every test", ALL_OUTPUT_MASK, NULL},
     {0, NULL, NULL, 0, NULL}};
 
 /**
