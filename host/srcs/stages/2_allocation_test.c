@@ -189,7 +189,8 @@ void test_allocation(t_function_call_footprint *allocation_info)
         fclose(stdout_tmpfile);
         fclose(stderr_tmpfile);
     }
-    check_leaks(function_tree);
+    if (is_option_set(TRACK_LEAK_MASK, config))
+        check_leaks(function_tree);
     clear_functions(&function_tree);
     free_setup_result(setup_result);
 }
