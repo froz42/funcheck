@@ -17,6 +17,8 @@
  */
 static void config_shared_memory_fetch(t_shared_info *shared_info)
 {
+    config_t *config = get_config();
+    shared_info->treat_abort_as_crash = is_option_set(ABORT_AS_CRASH_MASK, config);
     shared_info->runtype = RUNTYPE_FETCH;
     sem_init(&shared_info->lock_host, 1, 0);
     sem_init(&shared_info->lock_guest, 1, 0);

@@ -19,7 +19,15 @@ static void sig_handler(int signo)
 	case SIGBUS:
 	case SIGILL:
 	case SIGFPE:
+		event = CRASH;
+		strncpy(
+			shared_memory->function_name,
+			strsignal(signo),
+			sizeof(shared_memory->function_name));
+		break;
 	case SIGABRT:
+		if (!shared_memory->treat_abort_as_crash)
+			break;
 		event = CRASH;
 		strncpy(
 			shared_memory->function_name,

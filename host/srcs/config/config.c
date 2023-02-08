@@ -88,6 +88,7 @@ static const option_t options[] = {
     {'o', "output", "Specify the output format --output=simple|json|colored", 0, NULL},
     {'l', "track-leaks", "Track memory leaks", TRACK_LEAK_MASK, NULL},
     {'a', "all-output", "Output stdout and stderr of every test", ALL_OUTPUT_MASK, NULL},
+    {'c', "abort-as-crash", "Treat abort() as a crash", ABORT_AS_CRASH_MASK, NULL},
     {0, NULL, NULL, 0, NULL}};
 
 /**
