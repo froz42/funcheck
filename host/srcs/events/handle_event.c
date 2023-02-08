@@ -4,9 +4,9 @@
 #include <pthread.h>
 #include <stdio.h>
 
-static void handle_crash(t_symbolizer *symbolizer, t_event event, t_shared_info *shared_info)
+static void handle_crash(t_symbolizer *symbolizer, t_shared_info *shared_info)
 {
-    printf("[CRASH] %s\n", get_event_name(event));
+    printf("[CRASH] %s\n", shared_info->function_name);
     t_address_info *processed_backtrace =
         backtrace_process(
             NULL,
@@ -48,7 +48,7 @@ static void *handle_events_routine(t_handle_event_params *params)
             return (NULL);
         case CRASH:
             handle_crash(
-                params->symbolizer, event,
+                params->symbolizer,
                 params->shared_memory);
             release_event(params->shared_memory);
             return (NULL);
