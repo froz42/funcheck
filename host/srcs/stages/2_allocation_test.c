@@ -10,6 +10,7 @@
 #include "../events/handle_event.h"
 #include "../leak_check/leak_check.h"
 #include "../record_io/record_io.h"
+#include "../config/config.h"
 
 static int _argc = 0;
 static char **_argv = NULL;
@@ -19,8 +20,6 @@ static size_t _alloction_test_count;
 static size_t _alloction_test_total_size;
 static t_symbolizer *_symbolizer = NULL;
 static size_t _should_exit_fail = 0;
-
-#define RECORD_OUTPUT 1
 
 static void config_shared_memory_test(
     t_shared_info *shared_infos,
@@ -43,12 +42,15 @@ void test_allocation(t_function_call_footprint *allocation_info)
     int stdout_pipe[2];
     int stderr_pipe[2];
 
+    const config_t *config = get_config();
+    char record_output_enabled = !is_option_set(ALL_OUTPUT_MASK, config);
+
     if (pipe(stdin_pipe) == -1)
     {
         dprintf(2, "[ERROR] pipe failed: %s\n", strerror(errno));
         exit(1);
     }
-    if (RECORD_OUTPUT)
+    if (record_output_enabled)
     {
         if (pipe(stdout_pipe) == -1)
         {
@@ -88,7 +90,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     FILE *stdout_tmpfile = NULL;
     FILE *stderr_tmpfile = NULL;
 
-    if (RECORD_OUTPUT)
+    if (record_output_enabled)
     {
         stdout_tmpfile = tmpfile();
         if (stdout_tmpfile == NULL)
@@ -116,7 +118,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
         .tmp_file_store = stderr_tmpfile,
     };
 
-    if (RECORD_OUTPUT)
+    if (record_output_enabled)
     {
         launch_record(&record_stdout);
         launch_record(&record_stderr);
@@ -132,7 +134,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     int ret = run(&run_infos);
     if (ret < 0)
     {
-        if (RECORD_OUTPUT)
+        if (record_output_enabled)
         {
             stop_record(&record_stdout);
             stop_record(&record_stderr);
@@ -144,14 +146,14 @@ void test_allocation(t_function_call_footprint *allocation_info)
     close(stderr_pipe[0]);
     write_record_to_fd(stdin_pipe[1], _tmpfile_stdin);
     close(stdin_pipe[1]);
-    if (RECORD_OUTPUT)
+    if (record_output_enabled)
     {
         close(stdout_pipe[1]);
         close(stderr_pipe[1]);
     }
     if (waitpid(ret, NULL, 0) < 0)
     {
-        if (RECORD_OUTPUT)
+        if (record_output_enabled)
         {
             stop_record(&record_stdout);
             stop_record(&record_stderr);
@@ -162,7 +164,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     stop_handle_events(event_thread, setup_result.shared_memory);
     if (setup_result.shared_memory->event == CRASH)
     {
-        if (RECORD_OUTPUT)
+        if (record_output_enabled)
         {
             stop_record(&record_stdout);
             stop_record(&record_stderr);
@@ -180,7 +182,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
         free_setup_result(setup_result);
         return;
     }
-    if (RECORD_OUTPUT)
+    if (record_output_enabled)
     {
         stop_record(&record_stdout);
         stop_record(&record_stderr);
