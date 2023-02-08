@@ -7,6 +7,7 @@ const char *get_event_name(t_event event)
             "NONE",
             "alloc",
             "remove alloc",
+            "function call",
             "crash",
             "exit"};
     return events_name[event];
