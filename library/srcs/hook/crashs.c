@@ -21,6 +21,10 @@ static void sig_handler(int signo)
 	case SIGFPE:
 	case SIGABRT:
 		event = CRASH;
+		strncpy(
+			shared_memory->function_name,
+			strsignal(signo),
+			sizeof(shared_memory->function_name));
 		break;
 	default:
 		break;
