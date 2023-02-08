@@ -53,7 +53,6 @@ static void check_leak(t_function_call_footprint *info)
 
 void check_leaks(btree_t_function_call_footprint *tree)
 {
-    return;
     if (tree == NULL)
         return;
     btree_t_function_call_footprint_foreach(tree, check_leak);

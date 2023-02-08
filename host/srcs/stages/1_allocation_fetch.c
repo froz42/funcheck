@@ -8,6 +8,7 @@
 #include "../leak_check/leak_check.h"
 #include "../record_io/record_io.h"
 #include "../events/handle_event.h"
+#include "../config/config.h"
 
 /**
  * @brief Config the memory to fetch the allocation
@@ -90,7 +91,9 @@ t_fetch_result allocation_fetch(
         exit(EXIT_FAILURE);
     }
     stop_record(&record_stdin);
-    check_leaks(result.function_tree);
+    const config_t *config = get_config();
+    if (is_option_set(TRACK_LEAK_MASK, config))
+        check_leaks(result.function_tree);
     free_setup_result(setup_result);
     return result;
 }
