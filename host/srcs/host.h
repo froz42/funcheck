@@ -3,4 +3,8 @@
 
 #include "../../shared/shared.h"
 
+#ifndef VERSION
+#define VERSION "undefined"
+#endif
+
 #endif
