@@ -52,6 +52,12 @@ int main(int argc, char **argv, char **envp)
 		display_help();
 		return 0;
 	}
+
+	if (is_option_set(VERSION_MASK, config))
+	{
+		printf("%s\n", VERSION);
+		return 0;
+	}
 	
 	if (args_guest.argc == 0)
 	{

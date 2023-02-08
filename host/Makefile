@@ -15,6 +15,10 @@ CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g
 DFLAGS	= -MMD -MF $(@:.o=.d)
 
+# get version from commit tag or short commit hash
+VERSION = $(shell git describe --tags --always --dirty --broken 2>/dev/null || echo "unknown")
+VERSION_DEFINE = -DVERSION=\"$(VERSION)\"
+
 LIBFLAG = -lpthread
 
 SRCS_PATH		= ./srcs
@@ -51,7 +55,7 @@ $(NAME):	${OBJS}
 
 objs/%.o: 	$(SRCS_PATH)/%$(FILE_EXTENSION)
 			mkdir -p $(dir $@)
-			$(CC) $(CFLAGS) $(DFLAGS) ${DEFINE} -c $< -o $@
+			$(CC) $(CFLAGS) $(DFLAGS) ${VERSION_DEFINE} -c $< -o $@
 
 clean:		
 			rm -rf objs
