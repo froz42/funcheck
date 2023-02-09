@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tmatis <tmatis@student.42.fr>              +#+  +:+       +#+         #
+#    By: phabibis <phabibis@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/22 18:46:49 by tmatis            #+#    #+#              #
-#    Updated: 2022/09/09 16:37:25 by tmatis           ###   ########.fr        #
+#    Updated: 2023/02/09 18:39:21 by phabibis         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ SRCS	= 	main.c \
 			function_footprint/function_footprint.c \
 			function_footprint/compares.c \
 			env/env.c \
-			leak_check/leak_check.c \
+			allocations_summary/allocations_summary.c \
 			record_io/record_io.c \
 			backtrace/backtrace.c \
 			path/path.c \
@@ -40,8 +40,8 @@ SRCS	= 	main.c \
 			symbolizer/parse_output/llvm_symbolizer.c \
 			symbolizer/symbolizer.c \
 			stages/0_general_setup.c \
-			stages/1_allocation_fetch.c \
-			stages/2_allocation_test.c
+			stages/1_allocations_fetch.c \
+			stages/2_allocations_test.c
 
 
 OBJS	= $(addprefix objs/, ${SRCS:$(FILE_EXTENSION)=.o})

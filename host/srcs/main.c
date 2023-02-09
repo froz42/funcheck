@@ -72,11 +72,11 @@ int main(int argc, char **argv, char **envp)
 
 	t_symbolizer symbolizer = symbolizer_init(program_path);
 
-	t_fetch_result fetch_result = allocation_fetch(
+	t_fetch_result fetch_result = allocations_fetch(
 		args_guest.argc,
 		args_guest.argv,
 		envp, &symbolizer);
-	allocation_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
+	allocations_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
 	clear_fetch_result(&fetch_result);
 
 	symbolizer_stop(&symbolizer);

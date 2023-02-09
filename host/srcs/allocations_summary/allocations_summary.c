@@ -1,13 +1,13 @@
 #include "../function_footprint/function_footprint.h"
 #include <stdio.h>
 
-static size_t total_size_leaks(btree_t_allocation *tree, size_t *count_allocation)
+static size_t total_size_allocations(btree_t_allocation *tree, size_t *count_allocation)
 {
     if (tree == NULL)
         return 0;
     size_t size = tree->value.size;
-    size += total_size_leaks(tree->left, count_allocation);
-    size += total_size_leaks(tree->right, count_allocation);
+    size += total_size_allocations(tree->left, count_allocation);
+    size += total_size_allocations(tree->right, count_allocation);
     if (count_allocation != NULL)
         (*count_allocation)++;
     return size;
@@ -39,21 +39,21 @@ static void print_backtrace(t_address_info *backtrace)
     }
 }
 
-static void check_leak(t_function_call_footprint *info)
+static void allocation_summary(t_function_call_footprint *info)
 {
     if (info->allocations != NULL)
     {
-        size_t count_allocation = 0;
-        size_t size = total_size_leaks(info->allocations, &count_allocation);
-        printf("Leak of %zu bytes in %zu allocations\n", size, count_allocation);
+        size_t count_allocations = 0;
+        size_t size = total_size_allocations(info->allocations, &count_allocations);
+        printf("%zu bytes not freed in %zu allocations\n", size, count_allocations);
         printf("Allocated by %s\n", info->function_name);
         print_backtrace(info->backtrace);
     }
 }
 
-void check_leaks(btree_t_function_call_footprint *tree)
+void allocations_summary(btree_t_function_call_footprint *tree)
 {
     if (tree == NULL)
         return;
-    btree_t_function_call_footprint_foreach(tree, check_leak);
+    btree_t_function_call_footprint_foreach(tree, allocation_summary);
 }

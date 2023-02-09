@@ -8,7 +8,7 @@
 #include "../run/runner.h"
 #include "../events/event_utils.h"
 #include "../events/handle_event.h"
-#include "../leak_check/leak_check.h"
+#include "../allocations_summary/allocations_summary.h"
 #include "../record_io/record_io.h"
 #include "../config/config.h"
 
@@ -191,13 +191,13 @@ void test_allocation(t_function_call_footprint *allocation_info)
         fclose(stdout_tmpfile);
         fclose(stderr_tmpfile);
     }
-    if (is_option_set(TRACK_LEAK_MASK, config))
-        check_leaks(function_tree);
+    if (is_option_set(TRACK_ALLOCATIONS_MASK, config))
+        allocations_summary(function_tree);
     clear_functions(&function_tree);
     free_setup_result(setup_result);
 }
 
-void allocation_test(
+void allocations_test(
     int argc,
     char **argv,
     char **envp,

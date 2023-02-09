@@ -5,7 +5,7 @@
 #include "../function_footprint/function_footprint.h"
 #include "../run/runner.h"
 #include "../events/event_utils.h"
-#include "../leak_check/leak_check.h"
+#include "../allocations_summary/allocations_summary.h"
 #include "../record_io/record_io.h"
 #include "../events/handle_event.h"
 #include "../config/config.h"
@@ -24,7 +24,7 @@ static void config_shared_memory_fetch(t_shared_info *shared_info)
     sem_init(&shared_info->lock_guest, 1, 0);
 }
 
-t_fetch_result allocation_fetch(
+t_fetch_result allocations_fetch(
     int argc,
     char **argv,
     char **envp,
@@ -94,8 +94,8 @@ t_fetch_result allocation_fetch(
     }
     stop_record(&record_stdin);
     const config_t *config = get_config();
-    if (is_option_set(TRACK_LEAK_MASK, config))
-        check_leaks(result.function_tree);
+    if (is_option_set(TRACK_ALLOCATIONS_MASK, config))
+        allocations_summary(result.function_tree);
     free_setup_result(setup_result);
     return result;
 }
