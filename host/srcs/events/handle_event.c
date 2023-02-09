@@ -34,6 +34,16 @@ static void handle_function_call(
         if (found_node == NULL)
             return;
     }
+    if (config->ignore_functions)
+    {
+        char *function_name = shared_info->function_name;
+        btree_char_ptr_node *found_node = btree_char_ptr_search(
+            config->ignore_functions,
+            &function_name);
+        // if the function is present that mean that we want to ignore it
+        if (found_node != NULL)
+            return;
+    }
     if (is_alloc)
         add_allocation(symbolizer, function_tree, shared_info);
     else
