@@ -5,7 +5,7 @@
 
 #include "../../../shared/templates/btree.h"
 
-#define TRACK_LEAK_MASK 1 << 0
+#define TRACK_ALLOCATIONS_MASK 1 << 0
 #define ALL_OUTPUT_MASK 1 << 1
 #define SIMPLE_OUTPUT_MASK 1 << 2
 #define JSON_OUTPUT_MASK 1 << 3

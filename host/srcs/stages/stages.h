@@ -23,13 +23,13 @@ typedef struct
 
 t_setup_result general_setup(char **envp);
 void free_setup_result(t_setup_result result);
-t_fetch_result allocation_fetch(
+t_fetch_result allocations_fetch(
     int argc,
     char **argv,
     char **envp,
     t_symbolizer *symbolizer);
 void clear_fetch_result(t_fetch_result *result);
-void allocation_test(
+void allocations_test(
     int argc,
     char **argv,
     char **envp,
