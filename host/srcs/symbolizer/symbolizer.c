@@ -27,6 +27,13 @@ static const t_symbolizer_config *get_symbolizer_config(void)
 {
     static const t_symbolizer_config symbolizer_config[] = {
         {"llvm-symbolizer", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-14", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-13", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-12", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-11", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-10", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-9", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
+        {"llvm-symbolizer-8", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
         {"addr2line", "-f -e %s", parse_addr2line_output},
         {NULL, NULL, NULL},
     };
@@ -77,8 +84,6 @@ t_symbolizer symbolizer_init(char *program_path)
 {
     char options[1024] = {0};
     const t_symbolizer_config *symbolizer_config = get_symbolizer_config();
-    if (strcmp(symbolizer_config->symbolizer_name, "llvm-symbolizer"))
-        dprintf(STDERR_FILENO, "[Warning] llvm-symbolizer not found, falling back to addr2line\n");
 
     snprintf(
         options,
@@ -120,7 +125,6 @@ t_symbolizer symbolizer_init(char *program_path)
         close(pipe_stdin[0]);
         close(pipe_stdout[1]);
 
-        // p
         execvp(
             symbolizer_config->symbolizer_name,
             argv);
