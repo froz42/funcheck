@@ -69,6 +69,11 @@ int main(int argc, char **argv, char **envp)
 	print_header(args_guest.argc, args_guest.argv);
 
 	char *program_path = get_program_in_path(args_guest.argv[0]);
+	if (program_path == NULL)
+	{
+		printf("Program not found\n");
+		return 1;
+	}
 
 	t_symbolizer symbolizer = symbolizer_init(program_path);
 
