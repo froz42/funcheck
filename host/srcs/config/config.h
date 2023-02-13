@@ -7,11 +7,10 @@
 
 #define TRACK_ALLOCATIONS_MASK 1 << 0
 #define ALL_OUTPUT_MASK 1 << 1
-#define SIMPLE_OUTPUT_MASK 1 << 2
-#define JSON_OUTPUT_MASK 1 << 3
-#define VERSION_MASK 1 << 4
-#define HELP_MASK 1 << 5
-#define ABORT_AS_CRASH_MASK 1 << 6
+#define JSON_OUTPUT_MASK 1 << 2
+#define VERSION_MASK 1 << 3
+#define HELP_MASK 1 << 4
+#define ABORT_AS_CRASH_MASK 1 << 5
 
 
 typedef char *char_ptr;
