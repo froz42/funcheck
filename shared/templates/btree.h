@@ -20,6 +20,8 @@ size_t btree_##type##_size(btree_##type##_node *root); \
 void btree_##type##_foreach(btree_##type##_node *root, void (*f)(type*)); \
 void btree_##type##_delete(btree_##type##_node **root, type *value); \
 void btree_##type##_clear(btree_##type##_node **root, void (*f)(type*)); \
+type *btree_##type##_get(btree_##type##_node *root, size_t index); \
+size_t btree_##type##_count(btree_##type##_node *root, size_t (*f)(type*)); \
 typedef btree_##type##_node btree_##type
 
 /**
@@ -107,6 +109,28 @@ void btree_##type##_clear(btree_##type##_node **root, void (*f)(type*)) \
         f(&(*root)->value); \
     free(*root); \
     *root = NULL; \
+} \
+\
+type *btree_##type##_get(btree_##type##_node *root, size_t index) \
+{ \
+    if (root == NULL) \
+        return NULL; \
+    size_t left_size = btree_##type##_size(root->left); \
+    if (index == left_size) \
+        return &root->value; \
+    if (index < left_size) \
+        return btree_##type##_get(root->left, index); \
+    return btree_##type##_get(root->right, index - left_size - 1); \
+} \
+\
+size_t btree_##type##_count(btree_##type##_node *root, size_t (*f)(type*)) \
+{ \
+    if (root == NULL) \
+        return 0; \
+    return \
+        f(&root->value) \
+        + btree_##type##_count(root->left, f) \
+        + btree_##type##_count(root->right, f); \
 }
 
 #endif
