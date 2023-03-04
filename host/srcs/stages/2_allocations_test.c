@@ -8,9 +8,9 @@
 #include "../run/runner.h"
 #include "../events/event_utils.h"
 #include "../events/handle_event.h"
-#include "../allocations_summary/allocations_summary.h"
 #include "../record_io/record_io.h"
 #include "../config/config.h"
+#include "../output/output.h"
 
 static int _argc = 0;
 static char **_argv = NULL;
@@ -44,8 +44,10 @@ void test_allocation(t_function_call_footprint *allocation_info)
     int stdout_pipe[2];
     int stderr_pipe[2];
 
+    _alloction_test_count++;
     const config_t *config = get_config();
-    char record_output_enabled = !is_option_set(ALL_OUTPUT_MASK, config);
+    char record_output_enabled =
+        !is_option_set(ALL_OUTPUT_MASK, config) || is_option_set(JSON_OUTPUT_MASK, config);
 
     if (pipe(stdin_pipe) == -1)
     {
@@ -72,11 +74,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
         stderr_pipe[0] = NO_FD;
         stderr_pipe[1] = NO_FD;
     }
-    printf(
-        "test_function: %s: %zi/%zi\n",
-        allocation_info->function_name,
-        ++_alloction_test_count,
-        _alloction_test_total_size);
+
     t_setup_result setup_result = general_setup(_envp);
     config_shared_memory_test(setup_result.shared_memory, allocation_info);
     t_run_info run_infos = {
@@ -89,19 +87,12 @@ void test_allocation(t_function_call_footprint *allocation_info)
         .pipe_to_stderr = COPY_PIPE(stderr_pipe),
     };
 
-    FILE *stdout_tmpfile = NULL;
-    FILE *stderr_tmpfile = NULL;
+    FILE *output_tmpfile = NULL;
 
     if (record_output_enabled)
     {
-        stdout_tmpfile = tmpfile();
-        if (stdout_tmpfile == NULL)
-        {
-            dprintf(2, "[ERROR] tmpfile failed: %s\n", strerror(errno));
-            exit(1);
-        }
-        stderr_tmpfile = tmpfile();
-        if (stderr_tmpfile == NULL)
+        output_tmpfile = tmpfile();
+        if (output_tmpfile == NULL)
         {
             dprintf(2, "[ERROR] tmpfile failed: %s\n", strerror(errno));
             exit(1);
@@ -111,13 +102,13 @@ void test_allocation(t_function_call_footprint *allocation_info)
     t_record_io record_stdout = {
         .fd_to_read = stdout_pipe[0],
         .fd_to_write = NO_FD,
-        .tmp_file_store = stdout_tmpfile,
+        .tmp_file_store = output_tmpfile,
     };
 
     t_record_io record_stderr = {
         .fd_to_read = stderr_pipe[0],
         .fd_to_write = NO_FD,
-        .tmp_file_store = stderr_tmpfile,
+        .tmp_file_store = output_tmpfile,
     };
 
     if (record_output_enabled)
@@ -153,51 +144,48 @@ void test_allocation(t_function_call_footprint *allocation_info)
         close(stdout_pipe[1]);
         close(stderr_pipe[1]);
     }
-    if (waitpid(ret, NULL, 0) < 0)
+    int status = 0;
+    if (waitpid(ret, &status, 0) < 0)
     {
-        if (record_output_enabled)
-        {
-            stop_record(&record_stdout);
-            stop_record(&record_stderr);
-        }
-        clear_functions(&function_tree);
+        dprintf(2, "[ERROR] waitpid failed\n");
         exit(EXIT_FAILURE);
     }
     stop_handle_events(event_thread, setup_result.shared_memory);
-    if (setup_result.shared_memory->event == CRASH)
-    {
-        if (record_output_enabled)
-        {
-            stop_record(&record_stdout);
-            stop_record(&record_stderr);
-            printf("stderr: \n'\n");
-            write_record_to_stdout(stderr_tmpfile);
-            printf("'\n");
-            printf("stdout: \n'\n");
-            write_record_to_stdout(stdout_tmpfile);
-            printf("'\n");
-            fclose(stdout_tmpfile);
-            fclose(stderr_tmpfile);
-            _should_exit_fail = 1;
-        }
-        clear_functions(&function_tree);
-        free_setup_result(setup_result);
-        return;
-    }
     if (record_output_enabled)
     {
         stop_record(&record_stdout);
         stop_record(&record_stderr);
-        fclose(stdout_tmpfile);
-        fclose(stderr_tmpfile);
+        rewind(output_tmpfile);
     }
-    if (is_option_set(TRACK_ALLOCATIONS_MASK, config))
-        allocations_summary(function_tree);
+
+    const char *crash_name = NULL;
+    t_address_info *crash_backtrace = NULL;
+    if (setup_result.shared_memory->event == CRASH)
+    {
+        _should_exit_fail = 1;
+        crash_name = setup_result.shared_memory->function_name;
+        crash_backtrace = backtrace_process(
+            NULL,
+            _symbolizer,
+            setup_result.shared_memory->backtrace);
+    }
+
+    t_test_result_display result = {
+        .function_name = allocation_info->function_name,
+        .crash_name = crash_name,
+        .tmpfile_output = output_tmpfile,
+        .crash_backtrace = crash_backtrace,
+        .function_backtrace = allocation_info->backtrace,
+        .function_tree = function_tree,
+        .exit_code = WEXITSTATUS(status)};
+    write_test_result(&result, _alloction_test_count == _alloction_test_total_size);
+    if (record_output_enabled)
+        fclose(output_tmpfile);
     clear_functions(&function_tree);
     free_setup_result(setup_result);
 }
 
-void allocations_test(
+int allocations_test(
     int argc,
     char **argv,
     char **envp,
@@ -213,6 +201,5 @@ void allocations_test(
     _alloction_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
     btree_t_function_call_footprint_foreach(fetch_result->function_tree, test_allocation);
     fclose(_tmpfile_stdin);
-    if (_should_exit_fail)
-        exit(EXIT_FAILURE);
+    return _should_exit_fail;
 }

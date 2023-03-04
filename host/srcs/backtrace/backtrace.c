@@ -1,7 +1,9 @@
 #include "../function_footprint/function_footprint.h"
 #include "../symbolizer/symbolizer.h"
+#include "../utils/bool.h"
+#include <string.h>
 
-size_t backtrace_get_size(ptr_address *address_list)
+static size_t backtrace_get_size(ptr_address *address_list)
 {
     size_t i = 0;
     while (address_list[i] != 0)
@@ -9,19 +11,21 @@ size_t backtrace_get_size(ptr_address *address_list)
     return i;
 }
 
-void backtrace_print(t_address_info *backtrace)
+bool_t should_ignore_function(const char *function_name)
 {
-    size_t i = 0;
-    while (i < MAX_BACKTRACE_DEPTH && backtrace[i].address != 0)
+    static const char *functions_to_ignores[] = {
+        "_fini",
+        "_end",
+        "_start",
+        "__GNU_EH_FRAME_HDR",
+        "??"
+    };
+    for (size_t i = 0; i < sizeof(functions_to_ignores) / sizeof(char *); i++)
     {
-        printf(
-            "┗━━ %s in %s:%d (%#zx)\n",
-            backtrace[i].function_name,
-            backtrace[i].file_name,
-            backtrace[i].line_number,
-            backtrace[i].address);
-        i++;
+        if (strcmp(function_name, functions_to_ignores[i]) == 0)
+            return true;
     }
+    return false;
 }
 
 t_address_info *backtrace_process(
@@ -38,6 +42,5 @@ t_address_info *backtrace_process(
         exit(1);
     }
     symbolizer_get_address_info(symbolizer, backtrace, dest);
-    dest[backtrace_size].address = 0;
     return dest;
 }

@@ -24,7 +24,7 @@ typedef struct
     char letter;
     char *name;
     char *description;
-    char mask;
+    unsigned long int mask;
     parse_arg_callback_t callback;
 } option_t;
 
@@ -86,9 +86,10 @@ static const option_t options[] = {
     {'t', "test-functions", "Specify the functions to test --test-functions='func1 func2 func3' or --test-functions 'func1 func2 func3'", 0, parse_test_functions},
     {'i', "ignore-functions", "Specify the functions to ignore --ignore-functions='func1 func2 func3' or --ignore-functions 'func1 func2 func3'", 0, parse_ignore_functions},
     {'j', "json-output", "Output the result in json format", JSON_OUTPUT_MASK, NULL},
-    {'l', "track-allocations", "Track memory allocations", TRACK_ALLOCATIONS_MASK, NULL},
-    {'a', "all-output", "Output stdout and stderr of every test", ALL_OUTPUT_MASK, NULL},
+    {'a', "track-allocations", "Track memory allocations", TRACK_ALLOCATIONS_MASK, NULL},
+    {'o', "all-output", "Output stdout and stderr of every test", ALL_OUTPUT_MASK, NULL},
     {'c', "abort-as-crash", "Treat abort() as a crash", ABORT_AS_CRASH_MASK, NULL},
+    {'b', "complete-backtrace", "Keep unknowns functions and utils functions in backtrace", COMPLETE_BACKTRACE_MASK, NULL},
     {0, NULL, NULL, 0, NULL}};
 
 /**
@@ -308,7 +309,7 @@ config_t *get_config()
  * @param config the config to check
  * @return char 1 if the option is set, 0 otherwise
  */
-char is_option_set(int mask, const config_t *config)
+char is_option_set(unsigned long int mask, const config_t *config)
 {
     return (config->options & mask) != 0;
 }

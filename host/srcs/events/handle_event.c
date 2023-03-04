@@ -5,18 +5,6 @@
 #include <stdio.h>
 #include "../config/config.h"
 
-static void handle_crash(t_symbolizer *symbolizer, t_shared_info *shared_info)
-{
-    printf("[CRASH] %s\n", shared_info->function_name);
-    t_address_info *processed_backtrace =
-        backtrace_process(
-            NULL,
-            symbolizer,
-            shared_info->backtrace);
-    backtrace_print(processed_backtrace);
-    free(processed_backtrace);
-}
-
 static void handle_function_call(
     t_symbolizer *symbolizer,
     btree_t_function_call_footprint **function_tree,
@@ -63,12 +51,6 @@ static void *handle_events_routine(t_handle_event_params *params)
         switch (event)
         {
         case EXIT:
-            return (NULL);
-        case CRASH:
-            handle_crash(
-                params->symbolizer,
-                params->shared_memory);
-            release_event(params->shared_memory);
             return (NULL);
         case ALLOC:
         case FUNCTION_CALL:

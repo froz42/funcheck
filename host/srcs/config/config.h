@@ -11,7 +11,7 @@
 #define VERSION_MASK 1 << 3
 #define HELP_MASK 1 << 4
 #define ABORT_AS_CRASH_MASK 1 << 5
-
+#define COMPLETE_BACKTRACE_MASK 1 << 6
 
 typedef char *char_ptr;
 
@@ -19,7 +19,7 @@ define_btree_types(char_ptr, strcmp);
 
 typedef struct
 {
-    unsigned int options;
+    unsigned long int options;
     btree_char_ptr *test_functions;
     btree_char_ptr *ignore_functions;
 } config_t;
@@ -32,7 +32,7 @@ typedef struct
 
 args_t parse_args(int argc, char **argv);
 config_t *get_config();
-char is_option_set(int mask, const config_t *config);
+char is_option_set(unsigned long int mask, const config_t *config);
 void display_help(void);
 
 #endif
