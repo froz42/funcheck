@@ -23,7 +23,7 @@ int run(t_run_info *run_info)
 	if (pid < 0)
 	{
 		log_error("fork failed", true);
-		return -1;
+		exit(1);
 	}
 
 	if (pid == 0)

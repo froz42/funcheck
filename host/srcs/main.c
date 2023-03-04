@@ -10,22 +10,7 @@
 #include "symbolizer/symbolizer.h"
 #include "path/path.h"
 #include "config/config.h"
-
-/**
- * @brief Print the header with important information
- *
- * @param argc the number of arguments
- * @param argv the arguments
- * @param memory_name the name of the shared memory
- */
-void print_header(int argc, char **argv)
-{
-	printf("-------------------- funcheck v2 indev --------------------\n");
-	printf("Command line: ");
-	for (int i = 0; i < argc; i++)
-		printf("%s ", argv[i]);
-	printf("\n\n");
-}
+#include "output/output.h"
 
 /**
  * @brief The main function of the host
@@ -61,31 +46,39 @@ int main(int argc, char **argv, char **envp)
 	
 	if (args_guest.argc == 0)
 	{
-		printf("No program to run\n");
+		dprintf(2, "No program to run\n");
 		display_help();
 		return 1;
 	}
 
-	print_header(args_guest.argc, args_guest.argv);
-
 	char *program_path = get_program_in_path(args_guest.argv[0]);
 	if (program_path == NULL)
 	{
-		printf("Program not found\n");
+		dprintf(2, "Program not found\n");
 		return 1;
 	}
 
 	t_symbolizer symbolizer = symbolizer_init(program_path);
 
+	write_header(args_guest);
+
+	write_head_function_fetch();
 	t_fetch_result fetch_result = allocations_fetch(
 		args_guest.argc,
 		args_guest.argv,
 		envp, &symbolizer);
-	allocations_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
+	write_tail_function_fetch();
+	
+
+	write_head_function_tests();
+	int res = allocations_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
+	write_tail_function_tests();
 	clear_fetch_result(&fetch_result);
 
 	symbolizer_stop(&symbolizer);
 	free(program_path);
 
-	return 0;
+	write_tail();
+
+	return res;
 }

@@ -32,13 +32,19 @@ SRCS	= 	main.c \
 			function_footprint/function_footprint.c \
 			function_footprint/compares.c \
 			env/env.c \
-			allocations_summary/allocations_summary.c \
 			record_io/record_io.c \
 			backtrace/backtrace.c \
 			path/path.c \
 			symbolizer/parse_output/addr2line.c \
 			symbolizer/parse_output/llvm_symbolizer.c \
 			symbolizer/symbolizer.c \
+			json/json.c \
+			output/output.c \
+			output/output_allocation_track.c \
+			output/output_fetch_result.c \
+			output/output_test_result.c \
+			output/output_backtrace.c \
+			output/output_utils.c \
 			stages/0_general_setup.c \
 			stages/1_allocations_fetch.c \
 			stages/2_allocations_test.c

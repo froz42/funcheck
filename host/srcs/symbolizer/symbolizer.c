@@ -27,13 +27,6 @@ static const t_symbolizer_config *get_symbolizer_config(void)
 {
     static const t_symbolizer_config symbolizer_config[] = {
         {"llvm-symbolizer", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-14", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-13", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-12", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-11", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-10", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-9", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
-        {"llvm-symbolizer-8", "-f -e %s --relativenames", parse_llvm_symbolizer_output},
         {"addr2line", "-f -e %s", parse_addr2line_output},
         {NULL, NULL, NULL},
     };

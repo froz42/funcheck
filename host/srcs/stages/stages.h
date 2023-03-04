@@ -5,6 +5,7 @@
 #include "../function_footprint/function_footprint.h"
 #include "../run/runner.h"
 #include "../symbolizer/symbolizer.h"
+#include "../utils/bool.h"
 
 typedef struct
 {
@@ -21,6 +22,26 @@ typedef struct
     FILE *tmpfile_stdin;
 } t_fetch_result;
 
+typedef struct
+{
+    const char *crash_name;
+    btree_t_function_call_footprint *function_tree;
+    FILE *tmpfile_output;
+    t_address_info *backtrace;
+    int exit_code;
+} t_fetch_result_display;
+
+typedef struct
+{
+    const char *function_name;
+    const char *crash_name;
+    FILE *tmpfile_output;
+    t_address_info *function_backtrace;
+    t_address_info *crash_backtrace;
+    btree_t_function_call_footprint *function_tree;
+    int exit_code;
+} t_test_result_display;
+
 t_setup_result general_setup(char **envp);
 void free_setup_result(t_setup_result result);
 t_fetch_result allocations_fetch(
@@ -29,7 +50,7 @@ t_fetch_result allocations_fetch(
     char **envp,
     t_symbolizer *symbolizer);
 void clear_fetch_result(t_fetch_result *result);
-void allocations_test(
+int allocations_test(
     int argc,
     char **argv,
     char **envp,

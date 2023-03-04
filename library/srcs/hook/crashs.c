@@ -11,38 +11,17 @@ static void sig_handler(int signo)
 {
 	disable_hooks();
 	t_shared_info *shared_memory = get_shared_memory();
-	t_event event = NONE;
 
-	switch (signo)
+	if (!(!shared_memory->treat_abort_as_crash && signo == SIGABRT))
 	{
-	case SIGSEGV:
-	case SIGBUS:
-	case SIGILL:
-	case SIGFPE:
-		event = CRASH;
 		strncpy(
 			shared_memory->function_name,
 			strsignal(signo),
 			sizeof(shared_memory->function_name));
-		break;
-	case SIGABRT:
-		if (!shared_memory->treat_abort_as_crash)
-			break;
-		event = CRASH;
-		strncpy(
-			shared_memory->function_name,
-			strsignal(signo),
-			sizeof(shared_memory->function_name));
-		break;
-	default:
-		break;
-	}
-	if (event != NONE)
-	{
 		get_backtrace(shared_memory->backtrace);
-		send_event(shared_memory, event);
+		shared_memory->event = CRASH;
 	}
-	exit(0);
+	exit(signo + 128);
 }
 
 void setup_signals(void)
@@ -54,15 +33,14 @@ void setup_signals(void)
 		SIGILL,
 		SIGFPE,
 		SIGABRT,
-		SIGTERM,
-		SIGPIPE,
-		SIGINT,
-		SIGQUIT,
-		SIGKILL,
-		SIGSTOP,
-		SIGTSTP,
 	};
 
-	for (size_t i = 0; i < sizeof(signals) / sizeof(int); i++)
-		signal(signals[i], sig_handler);
+	for (size_t i = 0; i < sizeof(signals) / sizeof(signals[0]); i++)
+	{
+		if (signal(signals[i], sig_handler) == SIG_ERR)
+		{
+			dprintf(2, "[ERROR] signal failed\n");
+			exit(1);
+		}
+	}
 }

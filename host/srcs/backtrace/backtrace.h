@@ -1,6 +1,8 @@
 #ifndef BACKTRACE_H
 #define BACKTRACE_H
 
+#include "../../../shared/shared.h"
+#include "../utils/bool.h"
 
 typedef struct s_address_info
 {
@@ -17,7 +19,6 @@ t_address_info *backtrace_process(
     t_address_info *dest,
     t_symbolizer *symbolizer,
     ptr_address *backtrace);
-    
-void backtrace_print(t_address_info *backtrace);
+bool_t should_ignore_function(const char *function_name);
 
 #endif
