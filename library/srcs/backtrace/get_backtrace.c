@@ -14,14 +14,14 @@
 
 #define FALLBACK_MAIN_POS 2
 
-static void process_adresses(void **backtrace_buffer, int backtrace_size)
+static void process_addresses(void **backtrace_buffer, int backtrace_size)
 {
 	int i;
 	for (i = 0; i < backtrace_size; i++)
 	{
 		Dl_info info;
 		if (!dladdr(backtrace_buffer[i], &info))
-			raise_error("process_adresses: dladdr", true);
+			raise_error("process_addresses: dladdr", true);
 		backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - (size_t)info.dli_fbase - 1);
 	}
 	backtrace_buffer[i] = NULL;
@@ -33,7 +33,7 @@ void get_backtrace(ptr_address *dest)
 	int backtrace_size = backtrace(buffer, MAX_BACKTRACE_DEPTH);
 	if (backtrace_size == -1)
 		raise_error("get_backtrace: backtrace", true);
-	process_adresses(buffer, backtrace_size);
+	process_addresses(buffer, backtrace_size);
 	int i;
 	for (i = 0; i < backtrace_size; i++)
 		dest[i] = (ptr_address)buffer[i];
