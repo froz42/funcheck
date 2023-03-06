@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include "../utils/config.h"
 #include "../../../shared/shared.h"
+#include "../utils/error.h"
 
 #define FALLBACK_MAIN_POS 2
 
@@ -20,7 +21,7 @@ static void process_adresses(void **backtrace_buffer, int backtrace_size)
 	{
 		Dl_info info;
 		if (!dladdr(backtrace_buffer[i], &info))
-			continue;
+			raise_error("process_adresses: dladdr", true);
 		backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - (size_t)info.dli_fbase - 1);
 	}
 	backtrace_buffer[i] = NULL;
@@ -31,10 +32,7 @@ void get_backtrace(ptr_address *dest)
 	void *buffer[MAX_BACKTRACE_DEPTH + 1];
 	int backtrace_size = backtrace(buffer, MAX_BACKTRACE_DEPTH);
 	if (backtrace_size == -1)
-	{
-		fprintf(stderr, "backtrace() failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
+		raise_error("get_backtrace: backtrace", true);
 	process_adresses(buffer, backtrace_size);
 	int i;
 	for (i = 0; i < backtrace_size; i++)

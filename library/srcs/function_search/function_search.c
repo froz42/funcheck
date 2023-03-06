@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "function_search.h"
 #include "../hook/hook.h"
+#include "../utils/error.h"
 
 static btree_t_function_search *_function_tree = NULL;
 
@@ -52,10 +53,8 @@ void *function_search_get_function_address(const char *function_name)
     {
         void *function = dlsym(RTLD_NEXT, function_name);
         if (function == NULL)
-        {
-            dprintf(2, "Error: %s\n", dlerror());
-            exit(1);
-        }
+            raise_error("function_search_get_function_address: dlsym", true);
+
         t_function_search new_function_search = {
             .function_name = function_name,
             .function = function};

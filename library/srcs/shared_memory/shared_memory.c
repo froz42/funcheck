@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "../shared_memory/shared_memory.h"
 #include "../hook/hook.h"
+#include "../utils/error.h"
 
 static t_shared_info *shared_info = NULL;
 static const char *shared_memory_name = NULL;
@@ -16,16 +17,10 @@ static t_shared_info *open_shared_memory(const char *name)
 {
 	int fd = shm_open(name, O_RDWR, 0666);
 	if (fd == -1)
-	{
-		dprintf(2, "client: shm_open: %s\n", strerror(errno));
-		exit(1);
-	}
+		raise_error("open_shared_memory: shm_open", true);
 	t_shared_info *shared_info = mmap(NULL, sizeof(t_shared_info), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if (shared_info == MAP_FAILED)
-	{
-		dprintf(2, "client: mmap: %s\n", strerror(errno));
-		exit(1);
-	}
+		raise_error("open_shared_memory: mmap", true);
 	return shared_info;
 }
 
@@ -41,8 +36,7 @@ void close_shared_memory(void)
 {
 	if (!shared_info)
 		return;
-	if (munmap(shared_info, sizeof(t_shared_info)) == -1)
-		dprintf(2, "client: munmap: %s\n", strerror(errno));
+	munmap(shared_info, sizeof(t_shared_info));
 	shared_info = NULL;
 	shared_memory_name = NULL;
 }
@@ -50,9 +44,6 @@ void close_shared_memory(void)
 t_shared_info *get_shared_memory()
 {
 	if (shared_info == NULL)
-	{
-		dprintf(2, "client: shared memory not initialized\n");
-		exit(1);
-	}
+		raise_error("get_shared_memory: shared_info is not initialized", false);
 	return shared_info;
 }

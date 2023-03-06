@@ -7,6 +7,7 @@
 #include "../utils/export.h"
 #include "../env/clean_env.h"
 #include "./hook.h"
+#include "../utils/error.h"
 
 static int (*main_orig)(int, char **, char **);
 
@@ -34,6 +35,8 @@ int EXPORT __libc_start_main(
     main_orig = main;
 
     typeof(&__libc_start_main) orig = dlsym(RTLD_NEXT, "__libc_start_main");
+    if (!orig)
+        raise_error("main_hook: dlsym: could not find __libc_start_main", true);
 
     return orig(main_hook, argc, argv, init, fini, rtld_fini, stack_end);
 }

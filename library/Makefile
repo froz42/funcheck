@@ -48,7 +48,8 @@ SRCS	=	backtrace/get_backtrace.c \
 			function_search/function_search.c \
 			shared_memory/shared_memory.c \
 			env/clean_env.c \
-			setup/setup.c
+			setup/setup.c \
+			utils/error.c
 
 OBJS	= $(addprefix objs/, ${SRCS:$(FILE_EXTENSION)=.o})
 DEPS	= $(addprefix objs/, ${SRCS:$(FILE_EXTENSION)=.d})

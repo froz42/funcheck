@@ -7,6 +7,7 @@
 #include "../utils/bool.h"
 #include "../utils/export.h"
 #include "../backtrace/backtrace.h"
+#include "../utils/error.h"
 
 static ptr_address *_backtrace_to_block = NULL;
 static size_t _iteration_to_block;
@@ -22,10 +23,7 @@ void set_backtrace_to_block(ptr_address *backtrace, size_t iteration_to_block)
 		backtrace_length++;
 	_backtrace_to_block = malloc(sizeof(ptr_address) * (backtrace_length + 1));
 	if (!_backtrace_to_block)
-	{
-		fprintf(stderr, "malloc failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
+		raise_error("set_backtrace_to_block: malloc", true);
 
 	for (size_t i = 0; i < backtrace_length; i++)
 		_backtrace_to_block[i] = backtrace[i];
