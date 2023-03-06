@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "../../../shared/shared.h"
+#include "../utils/error.h"
 
 static size_t get_env_size(char **envp)
 {
@@ -16,10 +17,7 @@ char **clean_env(char **envp)
 	size_t size = get_env_size(envp);
 	char **clean_env = malloc(sizeof(char *) * (size + 1));
 	if (!clean_env)
-	{
-		dprintf(2, "client: clean_env: malloc failed\n");
-		exit(1);
-	}
+		raise_error("clean_env: malloc", true);
 
 	size_t i = 0;
 	size_t j = 0;

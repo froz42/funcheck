@@ -1,17 +1,21 @@
 #include <string.h>
 #include "../shared_memory/shared_memory.h"
+#include "../utils/error.h"
 
 void send_event(t_shared_info *shared_memory, t_event event)
 {
 	shared_memory->event = event;
-	sem_post(&shared_memory->lock_host);
-	sem_wait(&shared_memory->lock_guest);
+	if(sem_post(&shared_memory->lock_host) == -1)
+		raise_error("send_event: sem_post", true);
+	if(sem_wait(&shared_memory->lock_guest) == -1)
+		raise_error("send_event: sem_wait", true);
 }
 
 void send_event_nonblocking(t_shared_info *shared_memory, t_event event)
 {
 	shared_memory->event = event;
-	sem_post(&shared_memory->lock_host);
+	if(sem_post(&shared_memory->lock_host) == -1)
+		raise_error("send_event: sem_post", true);
 }
 
 void _send_alloc_event(

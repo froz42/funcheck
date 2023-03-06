@@ -6,6 +6,7 @@
 #include "../events/event_sender.h"
 #include "../backtrace/backtrace.h"
 #include "./hook.h"
+#include "../utils/error.h"
 
 static void sig_handler(int signo)
 {
@@ -38,9 +39,6 @@ void setup_signals(void)
 	for (size_t i = 0; i < sizeof(signals) / sizeof(signals[0]); i++)
 	{
 		if (signal(signals[i], sig_handler) == SIG_ERR)
-		{
-			dprintf(2, "[ERROR] signal failed\n");
-			exit(1);
-		}
+			raise_error("setup_signals: signal", true);
 	}
 }

@@ -6,7 +6,6 @@
 
 static void exit_hook(void)
 {
-	//symbolizer_stop();
 	close_shared_memory();
 }
 
