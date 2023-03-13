@@ -20,5 +20,6 @@ t_address_info *backtrace_process(
     t_symbolizer *symbolizer,
     ptr_address *backtrace);
 bool_t should_ignore_function(const char *function_name);
+void pretty_backtrace_print(t_address_info *backtrace);
 
 #endif

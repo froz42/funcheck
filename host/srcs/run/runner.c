@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include "../shared_memory/shared_memory.h"
 #include "../run/runner.h"
-#include "../logs/logger.h"
+#include "../logs/logs.h"
+#include "../utils/bool.h"
 
 
 /**
@@ -22,7 +23,7 @@ int run(t_run_info *run_info)
 
 	if (pid < 0)
 	{
-		log_error("fork failed", true);
+		// log_error("fork failed", true);
 		exit(1);
 	}
 
@@ -50,7 +51,7 @@ int run(t_run_info *run_info)
 		int ret = execvpe(run_info->argv[0], run_info->argv, run_info->envp);
 		if (ret < 0)
 		{
-			log_error("execvpe failed", true);
+			log_fatal("run: execvpe failed", true);
 			run_info->shared_info->event = EXIT;
 			sem_post(&run_info->shared_info->lock_host);
 			exit(1);

@@ -5,6 +5,12 @@
 #include <errno.h>
 #include "../../function_footprint/function_footprint.h"
 
+/**
+ * @brief Parse the output of addr2line.
+ * 
+ * @param file the file to parse
+ * @param address_info_ptr the address info to fill
+ */
 void parse_addr2line_output(FILE *file, t_address_info *address_info_ptr)
 {
     // we parse address two lines by two lines

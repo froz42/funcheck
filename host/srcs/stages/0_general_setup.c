@@ -2,33 +2,25 @@
 #include "stages.h"
 #include "../shared_memory/shared_memory.h"
 #include "../env/env.h"
+#include "../logs/logs.h"
 
 static char *get_library_path(void)
 {
     static char path[1024];
     char *exec_path = realpath("/proc/self/exe", NULL);
     if (exec_path == NULL)
-    {
-        dprintf(2, "Error: could not find the execution path\n");
-        exit(1);
-    }
+        log_fatal("Could not find the executable path", true);
     // remove the executable name
     char *last_slash = strrchr(exec_path, '/');
     if (last_slash == NULL)
-    {
-        dprintf(2, "Error: could not find the library path\n");
-        exit(1);
-    }
+        log_fatal("Could not find the executable path", true);
     *last_slash = '\0';
     // add the library path
     snprintf(path, sizeof(path), "%s/../library/libfuncheck.so", exec_path);
     free(exec_path);
     char *real_path = realpath(path, NULL);
     if (real_path == NULL)
-    {
-        dprintf(2, "Error: could not find the library path\n");
-        exit(1);
-    }
+        log_fatal("Could not find the library path", true);
     return real_path;
 }
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../utils/color.h"
+#include "../logs/logs.h"
 
 #define WIDTH_DESC 50
 
@@ -101,6 +102,8 @@ void write_desc(const char *desc)
 {
     char *saveptr = NULL;
     char *str = strdup(desc);
+    if (!str)
+        log_fatal("write_desc: strdup failed", true);
     char *token = strtok_r(str, " ", &saveptr);
     int len = 0;
     while (token != NULL)
@@ -118,6 +121,10 @@ void write_desc(const char *desc)
     free(str);
 }
 
+/**
+ * @brief Display the help
+ * 
+ */
 void display_help(void)
 {
     printf("\n  %s%sfuncheck%s - a functions calls protection checker\n\n", BOLD, YELLOW, RESET);

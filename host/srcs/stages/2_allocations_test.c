@@ -11,13 +11,15 @@
 #include "../record_io/record_io.h"
 #include "../config/config.h"
 #include "../output/output.h"
+#include "../time/time.h"
+#include "../logs/logs.h"
 
 static int _argc = 0;
 static char **_argv = NULL;
 static char **_envp = NULL;
 static FILE *_tmpfile_stdin = NULL;
-static size_t _alloction_test_count;
-static size_t _alloction_test_total_size;
+static size_t _allocation_test_count;
+static size_t _allocation_test_total_size;
 static t_symbolizer *_symbolizer = NULL;
 static size_t _should_exit_fail = 0;
 
@@ -44,28 +46,20 @@ void test_allocation(t_function_call_footprint *allocation_info)
     int stdout_pipe[2];
     int stderr_pipe[2];
 
-    _alloction_test_count++;
+    _allocation_test_count++;
+    timeval_t start_time = get_time();
     const config_t *config = get_config();
     char record_output_enabled =
         !is_option_set(ALL_OUTPUT_MASK, config) || is_option_set(JSON_OUTPUT_MASK, config);
 
     if (pipe(stdin_pipe) == -1)
-    {
-        dprintf(2, "[ERROR] pipe failed: %s\n", strerror(errno));
-        exit(1);
-    }
+        log_fatal("test_allocation: pipe failed", true);
     if (record_output_enabled)
     {
         if (pipe(stdout_pipe) == -1)
-        {
-            dprintf(2, "[ERROR] pipe failed: %s\n", strerror(errno));
-            exit(1);
-        }
+            log_fatal("test_allocation: pipe failed", true);
         if (pipe(stderr_pipe) == -1)
-        {
-            dprintf(2, "[ERROR] pipe failed: %s\n", strerror(errno));
-            exit(1);
-        }
+            log_fatal("test_allocation: pipe failed", true);
     }
     else
     {
@@ -93,10 +87,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     {
         output_tmpfile = tmpfile();
         if (output_tmpfile == NULL)
-        {
-            dprintf(2, "[ERROR] tmpfile failed: %s\n", strerror(errno));
-            exit(1);
-        }
+            log_fatal("test_allocation: tmpfile failed", true);
     }
 
     t_record_io record_stdout = {
@@ -146,10 +137,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
     }
     int status = 0;
     if (waitpid(ret, &status, 0) < 0)
-    {
-        dprintf(2, "[ERROR] waitpid failed\n");
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("test_allocation: waitpid failed", true);
     stop_handle_events(event_thread, setup_result.shared_memory);
     if (record_output_enabled)
     {
@@ -177,8 +165,12 @@ void test_allocation(t_function_call_footprint *allocation_info)
         .crash_backtrace = crash_backtrace,
         .function_backtrace = allocation_info->backtrace,
         .function_tree = function_tree,
-        .exit_code = WEXITSTATUS(status)};
-    write_test_result(&result, _alloction_test_count == _alloction_test_total_size);
+        .exit_code = WEXITSTATUS(status),
+        .time = get_timelapse(start_time),
+        .actual_test = _allocation_test_count,
+        .total_tests = _allocation_test_total_size,
+    };
+    write_test_result(&result, _allocation_test_count == _allocation_test_total_size);
     if (record_output_enabled)
         fclose(output_tmpfile);
     clear_functions(&function_tree);
@@ -197,8 +189,8 @@ int allocations_test(
     _envp = envp;
     _symbolizer = symbolizer;
     _tmpfile_stdin = fetch_result->tmpfile_stdin;
-    _alloction_test_count = 0;
-    _alloction_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
+    _allocation_test_count = 0;
+    _allocation_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
     btree_t_function_call_footprint_foreach(fetch_result->function_tree, test_allocation);
     fclose(_tmpfile_stdin);
     return _should_exit_fail;

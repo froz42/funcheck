@@ -11,6 +11,7 @@
 #include "path/path.h"
 #include "config/config.h"
 #include "output/output.h"
+#include "logs/logs.h"
 
 /**
  * @brief The main function of the host
@@ -22,12 +23,6 @@
  */
 int main(int argc, char **argv, char **envp)
 {
-	if (argc < 2)
-	{
-		display_help();
-		return 1;
-	}
-
 	args_t args_guest = parse_args(argc, argv);
 
 	const config_t *config = get_config();
@@ -35,27 +30,26 @@ int main(int argc, char **argv, char **envp)
 	if (is_option_set(HELP_MASK, config))
 	{
 		display_help();
-		return 0;
+		return EXIT_SUCCESS;
 	}
 
 	if (is_option_set(VERSION_MASK, config))
 	{
 		printf("%s\n", VERSION);
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	
 	if (args_guest.argc == 0)
 	{
-		dprintf(2, "No program to run\n");
-		display_help();
-		return 1;
+		log_error("No program specified, use --help for more information");
+		return EXIT_FAILURE;
 	}
 
 	char *program_path = get_program_in_path(args_guest.argv[0]);
 	if (program_path == NULL)
 	{
-		dprintf(2, "Program not found\n");
-		return 1;
+		log_error("Program not found or not executable");
+		return EXIT_FAILURE;
 	}
 
 	t_symbolizer symbolizer = symbolizer_init(program_path);
@@ -72,7 +66,7 @@ int main(int argc, char **argv, char **envp)
 
 	write_head_function_tests();
 	int res = allocations_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
-	write_tail_function_tests();
+	write_tail_function_tests(!res);
 	clear_fetch_result(&fetch_result);
 
 	symbolizer_stop(&symbolizer);

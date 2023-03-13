@@ -9,7 +9,7 @@
 void write_header(args_t args_guest);
 void write_tail(void);
 void write_head_function_tests(void);
-void write_tail_function_tests(void);
+void write_tail_function_tests(bool_t success);
 void write_head_function_fetch(void);
 void write_tail_function_fetch(void);
 void write_function_fetch_result(
@@ -24,4 +24,10 @@ void write_allocation_track(
 bool_t is_json_output_set(void);
 void write_head_function_test_header(void);
 void write_tail_function_test_header(void);
+void write_delim_bar(void);
+void write_pretty_allocation_track(
+    btree_t_function_call_footprint *function_tree,
+    const char *function_blocked,
+    t_address_info *backtrace);
+void output_file(FILE *file);
 #endif

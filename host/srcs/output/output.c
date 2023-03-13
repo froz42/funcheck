@@ -4,36 +4,13 @@
 #include "../host.h"
 #include "../stages/stages.h"
 #include "../backtrace/backtrace.h"
+#include "../logs/logs.h"
+#include "../utils/color.h"
 #include "output.h"
+#include <stdio.h>
 
-void write_header(args_t args_guest)
-{
-    if (is_json_output_set())
-    {
-        json_write_object(0);
-        json_write_key_value_string(
-            "funcheck-version",
-            VERSION,
-            1,
-            false);
-        json_write_key_value_string(
-            "program",
-            args_guest.argv[0],
-            1,
-            false);
-
-        // write arguments
-        json_write_key_array("arguments", 1);
-        for (int i = 1; i < args_guest.argc; i++)
-        {
-            json_write_value_string(
-                args_guest.argv[i],
-                2,
-                i == args_guest.argc - 1);
-        }
-        json_write_array_end(1, false);
-    }
-}
+#define SIZE_VERTICAL_BAR 30
+#define BAR_STR "─"
 
 void write_tail(void)
 {
@@ -41,10 +18,23 @@ void write_tail(void)
         json_write_object_end(0, true);
 }
 
+void write_delim_bar(void)
+{
+    fprintf(stdout, "%s", YELLOW);
+    for (size_t i = 0; i < SIZE_VERTICAL_BAR; i++)
+        fprintf(stdout, "%s", BAR_STR);
+    fprintf(stdout, "%s\n", RESET);
+}
+
 void write_head_function_fetch(void)
 {
     if (is_json_output_set())
         json_write_key_object("function-fetch", 1);
+    else
+    {
+        log_info("If your program wait for stdin input, you can type here or pipe it.");
+        fprintf(stdout, "%s───────────── TTY ────────────%s\n", YELLOW, RESET);
+    }
 }
 
 void write_tail_function_fetch(void)
@@ -59,10 +49,17 @@ void write_head_function_tests(void)
         json_write_key_array("function-tests", 1);
 }
 
-void write_tail_function_tests(void)
+void write_tail_function_tests(bool_t success)
 {
     if (is_json_output_set())
         json_write_array_end(1, true);
+    else
+    {
+        if (success)
+            log_success("all tested functions passed");
+        else
+            log_error("some tested functions failed");
+    }
 }
 
 void write_head_function_test_header(void)

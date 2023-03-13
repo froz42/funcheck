@@ -10,6 +10,7 @@
 #include "../path/path.h"
 #include "parse_output/parse_output.h"
 #include "symbolizer.h"
+#include "../logs/logs.h"
 
 typedef struct s_symbolizer_config
 {
@@ -34,7 +35,7 @@ static const t_symbolizer_config *get_symbolizer_config(void)
     for (int i = 0; symbolizer_config[i].symbolizer_name; i++)
     {
         if (is_program_in_path(symbolizer_config[i].symbolizer_name))
-            return (t_symbolizer_config *)&symbolizer_config[i];
+            return &symbolizer_config[i];
     }
     exit(EXIT_FAILURE);
 }
@@ -53,10 +54,8 @@ static char **generate_argv(const char *program_name, char *options)
     }
     char **argv = malloc(sizeof(char *) * (count + 3));
     if (argv == NULL)
-    {
-        dprintf(STDERR_FILENO, "Malloc failed: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("generate_argv: malloc failed", true);
+        
 
     char *copy_options = strdup(options);
 
@@ -88,23 +87,14 @@ t_symbolizer symbolizer_init(char *program_path)
     int pipe_stdout[2];
 
     if (pipe(pipe_stdin) == -1)
-    {
-        dprintf(2, "error: pipe: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("symbolizer_init: pipe", true);
     if (pipe(pipe_stdout) == -1)
-    {
-        dprintf(2, "error: pipe: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("symbolizer_init: pipe", true);
 
     pid_t pid = fork();
 
     if (pid == -1)
-    {
-        dprintf(2, "error: fork: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("symbolizer_init: fork", true);
     else if (pid == 0)
     {
         char **argv = generate_argv(symbolizer_config->symbolizer_name, options);
@@ -121,11 +111,7 @@ t_symbolizer symbolizer_init(char *program_path)
         execvp(
             symbolizer_config->symbolizer_name,
             argv);
-        for (size_t i = 0; argv[i]; i++)
-            free(argv[i]);
-        free(argv);
-        dprintf(2, "error: execvp: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
+        log_fatal("symbolizer_init: execvp", true);
     }
     close(pipe_stdin[0]);
     close(pipe_stdout[1]);
