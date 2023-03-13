@@ -120,13 +120,13 @@ void write_desc(const char *desc)
 
 void display_help(void)
 {
-    printf("\n  %s%sfuncheck%s - a functions calls protection checker\n\n", BOLD, CYAN, RESET);
+    printf("\n  %s%sfuncheck%s - a functions calls protection checker\n\n", BOLD, YELLOW, RESET);
     printf("  %s%sUSAGE%s\n\n", WHITE, BOLD, RESET);
-    printf("    %s%s$%s %sfuncheck%s --help\n", CYAN, BOLD, RESET, BOLD, RESET);
-    printf("    %s%s$%s %sfuncheck%s -v\n", CYAN, BOLD, RESET, BOLD, RESET);
-    printf("    %s%s$%s %sfuncheck%s %s./your_program%s [params]\n\n", CYAN, BOLD, RESET, BOLD, RESET, UNDERLINE, RESET);
+    printf("    %s%s$%s %sfuncheck%s --help\n", YELLOW, BOLD, RESET, BOLD, RESET);
+    printf("    %s%s$%s %sfuncheck%s -v\n", YELLOW, BOLD, RESET, BOLD, RESET);
+    printf("    %s%s$%s %sfuncheck%s %s./your_program%s [params]\n\n", YELLOW, BOLD, RESET, BOLD, RESET, UNDERLINE, RESET);
 
-    printf("    By default, %sfuncheck%s will test all the functions it can find\n", CYAN, RESET);
+    printf("    By default, %sfuncheck%s will test all the functions it can find\n", YELLOW, RESET);
     printf("    in the program. You can specify the functions to test with\n");
     printf("    the %s%s--test-functions%s option or the functions to ignore with\n", BOLD, UNDERLINE, RESET);
     printf("    the %s%s--ignore-functions%s option.\n\n", BOLD, UNDERLINE, RESET);
