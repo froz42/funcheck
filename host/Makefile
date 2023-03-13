@@ -26,7 +26,7 @@ SRCS	= 	main.c \
 			config/btree_char_ptr.c \
 			config/config.c \
 			shared_memory/shared_memory.c \
-			run/runner.c logs/logger.c \
+			run/runner.c \
 			events/event_utils.c \
 			events/handle_event.c \
 			function_footprint/function_footprint.c \
@@ -45,6 +45,10 @@ SRCS	= 	main.c \
 			output/output_test_result.c \
 			output/output_backtrace.c \
 			output/output_utils.c \
+			output/output_header.c \
+			output/loading_bar/loading_bar.c \
+			logs/logs.c \
+			time/time.c \
 			stages/0_general_setup.c \
 			stages/1_allocations_fetch.c \
 			stages/2_allocations_test.c

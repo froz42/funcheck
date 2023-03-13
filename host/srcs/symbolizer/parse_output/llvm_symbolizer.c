@@ -4,12 +4,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include "../../function_footprint/function_footprint.h"
+
+
 /**
- * @brief This function parse the output of llvm-symbolizer and return an array of t_address_info
- *
- * @param fd The file descriptor of the output of llvm-symbolizer
- * @param count_adress The number of address to parse
- * @return t_address_info* The array of t_address_info
+ * @brief Parse the output of llvm-symbolizer.
+ * 
+ * @param file the file to parse
+ * @param address_info_ptr the address info to fill
  */
 void parse_llvm_symbolizer_output(FILE *file, t_address_info *address_info_ptr)
 {

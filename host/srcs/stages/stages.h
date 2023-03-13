@@ -6,6 +6,7 @@
 #include "../run/runner.h"
 #include "../symbolizer/symbolizer.h"
 #include "../utils/bool.h"
+#include "../time/time.h"
 
 typedef struct
 {
@@ -40,6 +41,9 @@ typedef struct
     t_address_info *crash_backtrace;
     btree_t_function_call_footprint *function_tree;
     int exit_code;
+    msseconds_t time;
+    size_t actual_test;
+    size_t total_tests;
 } t_test_result_display;
 
 t_setup_result general_setup(char **envp);

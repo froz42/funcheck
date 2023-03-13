@@ -33,6 +33,8 @@ btree_##type##_node *btree_##type##_insert(btree_##type##_node **root, type *val
 { \
     if (*root == NULL) { \
         *root = malloc(sizeof(btree_##type##_node)); \
+        if (*root == NULL) \
+            exit(EXIT_FAILURE); \
         (*root)->value = *value; \
         (*root)->left = NULL; \
         (*root)->right = NULL; \

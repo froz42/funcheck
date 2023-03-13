@@ -4,6 +4,8 @@
 #include "../host.h"
 #include "../stages/stages.h"
 #include "../backtrace/backtrace.h"
+#include "../logs/logs.h"
+#include "../utils/color.h"
 #include "output.h"
 
 static void write_allocation_track_element(
@@ -103,4 +105,81 @@ void write_allocation_track(
         }
         json_write_array_end(indent_count, is_last);
     }
+}
+
+static size_t count_byte_allocated(t_allocation *node)
+{
+    return node->size;
+}
+
+static size_t count_byte_allocated_in_context(t_function_call_footprint *node)
+{
+    return btree_t_allocation_count(node->allocations, count_byte_allocated);
+}
+
+static size_t count_allocation_in_context(t_function_call_footprint *node)
+{
+    return btree_t_allocation_size(node->allocations);
+}
+
+static void write_pretty_allocation_track_element(
+    t_function_call_footprint *value)
+{
+    if (!value->allocations)
+        return;
+    size_t byte_allocated = count_byte_allocated_in_context(value);
+    size_t allocation_count = count_allocation_in_context(value);
+    fprintf(
+        stdout,
+        "┏%s %s%s %s %s%zu%s bytes allocated in %s%zu%s allocations is not freed\n",
+        B_YELLOW,
+        BOLD,
+        value->function_name,
+        RESET,
+        YELLOW,
+        byte_allocated,
+        RESET,
+        YELLOW,
+        allocation_count,
+        RESET);
+    pretty_backtrace_print(value->backtrace);
+}
+
+void write_pretty_allocation_track(
+    btree_t_function_call_footprint *function_tree,
+    const char *function_blocked,
+    t_address_info *backtrace)
+{
+    char buffer[512];
+    size_t allocation_context_count = btree_t_function_call_footprint_count(
+        function_tree,
+        count_allocation_nodes);
+    if (allocation_context_count == 0)
+        return;
+    if (!function_blocked)
+    {
+        snprintf(
+            buffer,
+            sizeof(buffer),
+            "Allocations are not freed in %s%zu%s contexts\n",
+            YELLOW,
+            allocation_context_count,
+            RESET);
+        log_warn(buffer);
+    }
+    else
+    {
+        fprintf(
+            stdout,
+            "┏%s %s%s %s when this function is failing allocations are not freed in %s%zu%s contexts \n",
+            B_GREEN,
+            BOLD,
+            function_blocked,
+            RESET,
+            YELLOW,
+            allocation_context_count,
+            RESET);
+        pretty_backtrace_print(backtrace);
+    }
+    btree_t_function_call_footprint_foreach(function_tree, write_pretty_allocation_track_element);
 }

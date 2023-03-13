@@ -10,6 +10,7 @@
 #include "../config/config.h"
 #include "../output/output.h"
 #include "../backtrace/backtrace.h"
+#include "../logs/logs.h"
 
 /**
  * @brief Config the memory to fetch the allocation
@@ -40,23 +41,14 @@ t_fetch_result allocations_fetch(
     int stderr_pipe[2];
 
     if (pipe(stdin_pipe) == -1)
-    {
-        dprintf(2, "[ERROR] pipe failed\n");
-        exit(1);
-    }
+        log_fatal("allocations_fetch: pipe failed", true);
 
     if (is_json_output)
     {
         if (pipe(stdout_pipe) == -1)
-        {
-            dprintf(2, "[ERROR] pipe failed\n");
-            exit(1);
-        }
+            log_fatal("allocations_fetch: pipe failed", true);
         if (pipe(stderr_pipe) == -1)
-        {
-            dprintf(2, "[ERROR] pipe failed\n");
-            exit(1);
-        }
+            log_fatal("allocations_fetch: pipe failed", true);
     }
     else
     {
@@ -82,18 +74,12 @@ t_fetch_result allocations_fetch(
     {
         tmpfile_output = tmpfile();
         if (tmpfile_output == NULL)
-        {
-            dprintf(2, "[ERROR] tmpfile failed\n");
-            exit(1);
-        }
+            log_fatal("allocations_fetch: tmpfile failed", true);
     }
 
     result.tmpfile_stdin = tmpfile();
     if (result.tmpfile_stdin == NULL)
-    {
-        dprintf(2, "[ERROR] tmpfile failed\n");
-        exit(1);
-    }
+        log_fatal("allocations_fetch: tmpfile failed", true);
 
     t_record_io record_stdin = {
         .fd_to_read = STDIN_FILENO,
@@ -128,10 +114,7 @@ t_fetch_result allocations_fetch(
     int ret = run(&run_infos);
     int status = 0;
     if (waitpid(ret, &status, 0) == -1)
-    {
-        dprintf(2, "[ERROR] waitpid failed\n");
-        exit(EXIT_FAILURE);
-    }
+        log_fatal("allocations_fetch: waitpid failed", true);
     stop_handle_events(event_thread, setup_result.shared_memory);
     stop_record(&record_stdin);
     if (is_json_output)
