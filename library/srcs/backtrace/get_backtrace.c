@@ -14,6 +14,12 @@
 
 #define FALLBACK_MAIN_POS 2
 
+/**
+ * @brief Transform the addresses in the backtrace buffer to relative addresses.
+ * 
+ * @param backtrace_buffer the buffer containing the addresses (also the destination)
+ * @param backtrace_size the size of the buffer
+ */
 static void process_addresses(void **backtrace_buffer, int backtrace_size)
 {
 	int i;
@@ -27,7 +33,12 @@ static void process_addresses(void **backtrace_buffer, int backtrace_size)
 	backtrace_buffer[i] = NULL;
 }
 
-void get_backtrace(ptr_address *dest)
+/**
+ * @brief Get the backtrace of the current thread.
+ * 
+ * @param dest the destination buffer
+ */
+void get_backtrace(ptr_address dest[MAX_BACKTRACE_DEPTH])
 {
 	void *buffer[MAX_BACKTRACE_DEPTH + 1];
 	int backtrace_size = backtrace(buffer, MAX_BACKTRACE_DEPTH);

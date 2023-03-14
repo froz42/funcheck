@@ -13,6 +13,12 @@
 static t_shared_info *shared_info = NULL;
 static const char *shared_memory_name = NULL;
 
+/**
+ * @brief Open the shared memory
+ * 
+ * @param name the name of the shared memory
+ * @return t_shared_info* the shared memory
+ */
 static t_shared_info *open_shared_memory(const char *name)
 {
 	int fd = shm_open(name, O_RDWR, 0666);
@@ -24,6 +30,11 @@ static t_shared_info *open_shared_memory(const char *name)
 	return shared_info;
 }
 
+/**
+ * @brief Initialize the shared memory
+ * 
+ * @return t_shared_info* the shared memory
+ */
 t_shared_info *init_shared_memory(void)
 {
 	const char *name = getenv(ENV_MEMORY_NAME);
@@ -32,6 +43,10 @@ t_shared_info *init_shared_memory(void)
 	return shared_info;
 }
 
+/**
+ * @brief Close the shared memory
+ * 
+ */
 void close_shared_memory(void)
 {
 	if (!shared_info)
@@ -41,6 +56,11 @@ void close_shared_memory(void)
 	shared_memory_name = NULL;
 }
 
+/**
+ * @brief Get the shared memory
+ * 
+ * @return t_shared_info* the shared memory
+ */
 t_shared_info *get_shared_memory()
 {
 	if (shared_info == NULL)

@@ -3,6 +3,6 @@
 
 #include "../shared_memory/shared_memory.h"
 
-void get_backtrace(ptr_address *dest);
+void get_backtrace(ptr_address dest[MAX_BACKTRACE_DEPTH]);
 
 #endif

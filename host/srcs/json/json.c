@@ -102,7 +102,7 @@ void json_write_key_value_number(const char *key, size_t value, size_t indent_co
     printf("\"%s\": %zu%s\n", key, value, is_last ? "" : ",");
 }
 
-void json_write_key_value_bool(const char *key, bool_t value, size_t indent_count, bool_t is_last)
+void json_write_key_valuebool_t(const char *key, bool_t value, size_t indent_count, bool_t is_last)
 {
     json_write_indent(indent_count);
     printf("\"%s\": %s%s\n", key, BOOL_STR(value), is_last ? "" : ",");

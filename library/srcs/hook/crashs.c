@@ -8,6 +8,11 @@
 #include "./hook.h"
 #include "../utils/error.h"
 
+/**
+ * @brief Signal handler hook
+ * 
+ * @param signo the signal number
+ */
 static void sig_handler(int signo)
 {
 	disable_hooks();
@@ -25,9 +30,13 @@ static void sig_handler(int signo)
 	exit(signo + 128);
 }
 
+/**
+ * @brief Setup signal handlers
+ * 
+ */
 void setup_signals(void)
 {
-	// handle all signals that quit the program
+	// handle all signals that crash the program
 	static const int signals[] = {
 		SIGSEGV,
 		SIGBUS,

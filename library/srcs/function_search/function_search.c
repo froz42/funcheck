@@ -11,11 +11,26 @@ static btree_t_function_search *_function_tree = NULL;
 
 define_btree_functions(t_function_search, function_search_cmp);
 
+/**
+ * @brief This function is used to compare two t_function_search.
+ * 
+ * @param a the first element
+ * @param b the second element
+ * @return int the difference between the two elements
+ */
 int function_search_cmp(t_function_search *a, t_function_search *b)
 {
     return strcmp(a->function_name, b->function_name);
 }
 
+/**
+ * @brief This function is used to insert a new element
+ * 
+ * @param root the root of the tree
+ * @param value the value to insert
+ * @param custom_alloc the custom allocator to use
+ * @return btree_t_function_search* the node containing the value
+ */
 btree_t_function_search *btree_t_function_search_custom_insert(
     btree_t_function_search **root,
     t_function_search *value,
@@ -41,9 +56,15 @@ btree_t_function_search *btree_t_function_search_custom_insert(
             custom_alloc);
 }
 
+/**
+ * @brief This function is used to search for a function address.
+ * 
+ * @param function_name the name of the function
+ * @return void* the address of the function
+ */
 void *function_search_get_function_address(const char *function_name)
 {
-    _bool is_hook_enabled = is_hooks_enabled();
+    bool_t is_hook_enabled = is_hooks_enabled();
     disable_hooks();
     t_function_search function_search = {.function_name = function_name};
     btree_t_function_search *node = btree_t_function_search_search(

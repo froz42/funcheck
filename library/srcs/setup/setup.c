@@ -5,6 +5,11 @@
 
 # define BEFORE_MAIN __attribute__((constructor))
 
+/**
+ * @brief Setup the library
+ * 
+ * @return t_shared_info* the shared memory with host
+ */
 t_shared_info *setup()
 {
     disable_hooks();
@@ -19,6 +24,10 @@ t_shared_info *setup()
     return shared_memory;
 }
 
+/**
+ * @brief setup the hooks (called before main)
+ * 
+ */
 void BEFORE_MAIN setup_hook()
 {
     setup();
