@@ -2,6 +2,12 @@
 #include "../shared_memory/shared_memory.h"
 #include "../utils/error.h"
 
+/**
+ * @brief Send an event to host
+ * 
+ * @param shared_memory the shared memory with host
+ * @param event the event to send
+ */
 void send_event(t_shared_info *shared_memory, t_event event)
 {
 	shared_memory->event = event;
@@ -11,6 +17,12 @@ void send_event(t_shared_info *shared_memory, t_event event)
 		raise_error("send_event: sem_wait", true);
 }
 
+/**
+ * @brief Send an event to host without waiting for response
+ * 
+ * @param shared_memory the shared memory with host
+ * @param event the event to send
+ */
 void send_event_nonblocking(t_shared_info *shared_memory, t_event event)
 {
 	shared_memory->event = event;
@@ -18,6 +30,14 @@ void send_event_nonblocking(t_shared_info *shared_memory, t_event event)
 		raise_error("send_event: sem_post", true);
 }
 
+/**
+ * @brief Send an allocation event to host
+ * 
+ * @param shared_memory the shared memory with host
+ * @param ptr the pointer to the allocated memory
+ * @param size the size of the allocated memory
+ * @param function_name the name of the function that allocated the memory
+ */
 void _send_alloc_event(
 	t_shared_info *shared_memory,
 	void *ptr,
@@ -33,6 +53,13 @@ void _send_alloc_event(
 	send_event(shared_memory, ALLOC);
 }
 
+/**
+ * @brief Send a remove allocation event to host
+ * 
+ * @param shared_memory the shared memory with host
+ * @param ptr the pointer to the allocated memory
+ * @param function_name the name of the function that allocated the memory
+ */
 void _send_remove_alloc_event(
 	t_shared_info *shared_memory,
 	void *ptr,
@@ -46,6 +73,12 @@ void _send_remove_alloc_event(
 	send_event(shared_memory, REMOVE_ALLOC);
 }
 
+/**
+ * @brief Send a function call event to host
+ * 
+ * @param shared_memory the shared memory with host
+ * @param function_name the name of the function that was called
+ */
 void _send_function_call_event(
 	t_shared_info *shared_memory,
 	const char *function_name)

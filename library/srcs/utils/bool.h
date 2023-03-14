@@ -1,9 +1,6 @@
-#ifndef BOOL_H
-#define BOOL_H
+#ifndef BOOL_GUEST_H
+#define BOOL_GUEST_H
 
-typedef int _bool;
-
-# define false 0
-# define true 1
+#include "../../../shared/bool.h"
 
 #endif

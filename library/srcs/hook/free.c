@@ -5,7 +5,11 @@
 #include "../events/event_sender.h"
 #include "../function_search/function_search.h"
 
-
+/**
+ * @brief The free function hook.
+ * 
+ * @param ptr the pointer to the allocated memory
+ */
 void EXPORT free(void *ptr)
 {
     typeof(&free) original_function = get_original_function();
