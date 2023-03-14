@@ -57,5 +57,21 @@ jobs:
           path: host
       - name: enable execution
         run: chmod +x host/funcheck
+      - name: Setup node 19.7
+        uses: actions/setup-node@v2
+        with:
+          node-version: '19.7'
+      - name: install llvm
+        run: sudo apt-get install llvm
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+          dir: 'e2e'
       - name: Run tests
-        run: cd tests/ && bash ./launch_test.sh
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
+          dir: 'e2e'
