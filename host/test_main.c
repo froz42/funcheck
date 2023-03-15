@@ -8,19 +8,17 @@
 
 void wrap(void)
 {
-	char *str = strdup("Hello world\nhello world\n");
-	if (!str)
+	int fd = open("test_main.c", O_RDONLY);
+	if (fd == -1)
 	{
-		fprintf(stderr, "fake crashing: strdup failed: %s\n", strerror(errno));
+		printf("Error: %s\n", strerror(errno));
 		raise(SIGSEGV);
 	}
-
-	char *str2 = strdup("Hello world\nhello world\n");
-	if (!str2)
-		return;
-	printf("%s", str);
-	free(str);
-	free(str2);
+	else
+	{
+		printf("Success\n");
+		close(fd);
+	}
 }
 
 int main(void)
