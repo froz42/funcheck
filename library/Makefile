@@ -25,26 +25,10 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/exit.c \
 			hook/free.c \
 			hook/main.c \
-			hook/tests/calloc.c \
-			hook/tests/malloc.c \
-			hook/tests/realloc.c \
-			hook/tests/open.c \
-			hook/tests/mmap.c \
-			hook/tests/pthread_create.c \
-			hook/tests/dup.c \
-			hook/tests/dup2.c \
-			hook/tests/epoll_create.c \
-			hook/tests/epoll_wait.c \
-			hook/tests/execve.c \
-			hook/tests/fork.c \
-			hook/tests/getpid.c \
-			hook/tests/poll.c \
-			hook/tests/read.c \
-			hook/tests/select.c \
-			hook/tests/sigaction.c \
-			hook/tests/signal.c \
-			hook/tests/socket.c \
-			hook/tests/realpath.c \
+			hook/functions/unistd.c \
+			hook/allocs/malloc.c \
+			hook/allocs/realloc.c \
+			hook/allocs/calloc.c \
 			function_search/function_search.c \
 			shared_memory/shared_memory.c \
 			env/clean_env.c \

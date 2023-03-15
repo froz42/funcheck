@@ -18,6 +18,7 @@ bool_t should_ignore_function(const char *function_name)
         "_end",
         "_start",
         "__GNU_EH_FRAME_HDR",
+        "__FRAME_END__",
         "??"
     };
     for (size_t i = 0; i < sizeof(functions_to_ignores) / sizeof(char *); i++)
