@@ -1,10 +1,10 @@
 #ifndef BOOL_H
 #define BOOL_H
 
-typedef int bool_t;
-
-# define false 0
-# define true 1
+typedef enum bool_e {
+    false = 0,
+    true = 1
+} bool_t;
 
 # define BOOL_STR(x) ((x) ? "true" : "false")
 
