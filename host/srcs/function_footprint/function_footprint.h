@@ -27,6 +27,7 @@ typedef struct s_function_call_footprint
     size_t call_count;
     btree_t_allocation_node *allocations;
     char *function_name;
+    bool_t should_test;
 } t_function_call_footprint;
 
 int cmp_t_function_call_footprint(t_function_call_footprint *a, t_function_call_footprint *b);
@@ -45,5 +46,5 @@ void add_allocation(
     t_shared_info *shared_infos);
 void clear_functions(btree_t_function_call_footprint **function_tree);
 void remove_allocation(btree_t_function_call_footprint **function_tree, void *ptr);
-
+size_t count_testable_functions(btree_t_function_call_footprint *function_tree);
 #endif

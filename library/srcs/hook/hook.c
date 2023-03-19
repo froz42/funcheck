@@ -14,7 +14,20 @@ static size_t _iteration_to_block;
 
 static size_t _current_iteration;
 
-static bool_t _hooks_enabled = false;
+static bool_t _function_hooks_enabled = false;
+static bool_t _alloc_hooks_enabled = false;
+
+static const char *_hooked_function_name = NULL;
+
+void set_hooked_function_name(const char *function_name)
+{
+	_hooked_function_name = function_name;
+}
+
+const char *get_hooked_function_name(void)
+{
+	return _hooked_function_name;
+}
 
 /**
  * @brief set the backtrace to block and the iteration to block
@@ -39,32 +52,51 @@ void set_backtrace_to_block(ptr_address *backtrace, size_t iteration_to_block)
 	_current_iteration = 0;
 }
 
-/**
- * @brief Disable the hooks
- * 
- */
-void disable_hooks(void)
+void disable_function_hooks(void)
 {
-	_hooks_enabled = false;
+	_function_hooks_enabled = false;
 }
 
-/**
- * @brief Enable the hooks
- * 
- */
-void enable_hooks(void)
+void enable_function_hooks(void)
 {
-	_hooks_enabled = true;
+	_function_hooks_enabled = true;
 }
 
-/**
- * @brief Check if the hooks are enabled
- * 
- * @return bool_t true if the hooks are enabled, false otherwise
- */
+void disable_alloc_hooks(void)
+{
+	_alloc_hooks_enabled = false;
+}
+
+void enable_alloc_hooks(void)
+{
+	_alloc_hooks_enabled = true;
+}
+
+void disable_function_and_alloc_hooks(void)
+{
+	disable_function_hooks();
+	disable_alloc_hooks();
+}
+
+void enable_function_and_alloc_hooks(void)
+{
+	enable_function_hooks();
+	enable_alloc_hooks();
+}
+
+bool_t is_function_hooks_enabled(void)
+{
+	return _function_hooks_enabled;
+}
+
+bool_t is_alloc_hooks_enabled(void)
+{
+	return _alloc_hooks_enabled;
+}
+
 bool_t is_hooks_enabled(void)
 {
-	return _hooks_enabled;
+	return _function_hooks_enabled || _alloc_hooks_enabled;
 }
 
 

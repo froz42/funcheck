@@ -21,11 +21,11 @@ static int (*main_orig)(int, char **, char **);
  */
 int main_hook(int argc, char **argv, char **envp)
 {
-    disable_hooks();
+    disable_function_and_alloc_hooks();
     char **cleaned_env = clean_env(envp);
-    enable_hooks();
+    enable_function_and_alloc_hooks();
     int ret = main_orig(argc, argv, cleaned_env);
-    disable_hooks();
+    disable_function_and_alloc_hooks();
 
     free(cleaned_env);
     return ret;

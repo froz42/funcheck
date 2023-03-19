@@ -10,28 +10,31 @@ void _send_alloc_event(
     t_shared_info *shared_memory,
     void *ptr,
     size_t size,
+    bool_t is_child,
     const char *function_name);
+
 void _send_remove_alloc_event(
     t_shared_info *shared_memory,
     void *ptr,
     const char *function_name);
 void _send_function_call_event(
-	t_shared_info *shared_memory,
-	const char *function_name);
+    t_shared_info *shared_memory,
+    const char *function_name);
 
 /**
  * @brief Send an allocation event to host
- * 
+ *
  * @param shared_memory the shared memory with host
  * @param ptr the pointer to the allocated memory
  * @param size the size of the allocated memory
+ * @param is_child whether the allocation is a child of another function
  */
-#define send_alloc_event(shared_memory, ptr, size) \
-    _send_alloc_event(shared_memory, ptr, size, __func__)
+#define send_alloc_event(shared_memory, ptr, size, is_child) \
+    _send_alloc_event(shared_memory, ptr, size, is_child, __func__)
 
 /**
  * @brief Send a remove allocation event to host
- * 
+ *
  * @param shared_memory the shared memory with host
  * @param ptr the pointer to the allocated memory
  */
@@ -40,7 +43,7 @@ void _send_function_call_event(
 
 /**
  * @brief Send a function call event to host
- * 
+ *
  * @param shared_memory the shared memory with host
  */
 #define send_function_call_event(shared_memory) \

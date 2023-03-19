@@ -12,7 +12,7 @@
  */
 t_shared_info *setup()
 {
-    disable_hooks();
+    disable_function_and_alloc_hooks();
     t_shared_info *shared_memory = init_shared_memory();
     setup_hooks();
     if (shared_memory->runtype == RUNTYPE_TEST)
@@ -20,7 +20,7 @@ t_shared_info *setup()
     setvbuf(stdout, NULL, _IONBF, 0);
     unsetenv("LD_PRELOAD");
     unsetenv(ENV_MEMORY_NAME);
-    enable_hooks();
+    enable_function_and_alloc_hooks();
     return shared_memory;
 }
 

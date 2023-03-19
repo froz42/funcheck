@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	= libfuncheck.so
-CC		= gcc
+CC		= clang
 CFLAGS	= -Wall -Wextra -Werror -g -fPIC -fvisibility=hidden
 DFLAGS	= -MMD -MF $(@:.o=.d)
 LIBFLAG = -ldl -lpthread
@@ -26,6 +26,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/free.c \
 			hook/main.c \
 			hook/functions/unistd.c \
+			hook/functions/stdio.c \
 			hook/allocs/malloc.c \
 			hook/allocs/realloc.c \
 			hook/allocs/calloc.c \
