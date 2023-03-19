@@ -15,7 +15,7 @@
  */
 static void sig_handler(int signo)
 {
-	disable_hooks();
+	disable_function_and_alloc_hooks();
 	t_shared_info *shared_memory = get_shared_memory();
 
 	if (!(!shared_memory->treat_abort_as_crash && signo == SIGABRT))

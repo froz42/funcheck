@@ -1,6 +1,7 @@
 #ifndef SHARED_H
 #define SHARED_H
 
+#include "bool.h"
 #include <semaphore.h>
 
 #define ENV_MEMORY_NAME "funcheck_MEMORY_NAME"
@@ -37,6 +38,7 @@ typedef struct s_shared_info
 	t_runtype runtype;
 	ptr_address backtrace[MAX_BACKTRACE_DEPTH];
 	char function_name[256];
+	bool_t should_test;
 	t_allocation_data allocation;
 	t_event event;
 	sem_t lock_guest;

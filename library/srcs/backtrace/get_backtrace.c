@@ -11,6 +11,7 @@
 #include "../utils/config.h"
 #include "../../../shared/shared.h"
 #include "../utils/error.h"
+#include "../hook/hook.h"
 
 #define FALLBACK_MAIN_POS 2
 
@@ -41,6 +42,13 @@ static void process_addresses(void **backtrace_buffer, int backtrace_size)
 void get_backtrace(ptr_address dest[MAX_BACKTRACE_DEPTH])
 {
 	void *buffer[MAX_BACKTRACE_DEPTH + 1];
+
+	bool_t is_alloc_hook_enabled = is_alloc_hooks_enabled();
+	bool_t is_function_hook_enabled = is_function_hooks_enabled();
+
+	disable_alloc_hooks();
+	disable_function_hooks();
+
 	int backtrace_size = backtrace(buffer, MAX_BACKTRACE_DEPTH);
 	if (backtrace_size == -1)
 		raise_error("get_backtrace: backtrace", true);
@@ -49,4 +57,9 @@ void get_backtrace(ptr_address dest[MAX_BACKTRACE_DEPTH])
 	for (i = 0; i < backtrace_size; i++)
 		dest[i] = (ptr_address)buffer[i];
 	dest[backtrace_size] = 0x0;
+
+	if (is_alloc_hook_enabled)
+		enable_alloc_hooks();
+	if (is_function_hook_enabled)
+		enable_function_hooks();
 }

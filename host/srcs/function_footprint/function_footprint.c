@@ -22,6 +22,7 @@ btree_t_function_call_footprint *add_function_call(
         .allocations = NULL,
         .call_count = 0,
         .function_name = strdup(shared_infos->function_name),
+        .should_test = shared_infos->should_test
     };
 
     backtrace_process(allocation_info.backtrace, symbolizer, shared_infos->backtrace);
@@ -67,4 +68,16 @@ void remove_allocation(btree_t_function_call_footprint **function_tree, void *pt
 {
     _ptr_to_free = ptr;
     btree_t_function_call_footprint_foreach(*function_tree, remove_allocation_from_tree);
+}
+
+static size_t count_tests(t_function_call_footprint *test_elem)
+{
+    if (test_elem->should_test)
+        return 1;
+    return 0;
+}
+
+size_t count_testable_functions(btree_t_function_call_footprint *function_tree)
+{
+    return btree_t_function_call_footprint_count(function_tree, count_tests);
 }

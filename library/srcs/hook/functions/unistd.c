@@ -20,7 +20,6 @@ DEFINE_HOOK_FUNCTION(__off_t, lseek, EIO, -1, int, fd, __off_t, offset, int, whe
 DEFINE_HOOK_FUNCTION(__off64_t, lseek64, EIO, -1, int, fd, __off64_t, offset, int, whence);
 
 DEFINE_HOOK_FUNCTION(int, close, EIO, -1, int, fd);
-DEFINE_HOOK_FUNCTION(void, closefrom, EIO, , int, lowfd);
 
 DEFINE_HOOK_FUNCTION(ssize_t, read, EIO, -1, int, fd, void *, buf, size_t, count);
 DEFINE_HOOK_FUNCTION(ssize_t, write, EIO, -1, int, fd, const void *, buf, size_t, count);
@@ -44,8 +43,9 @@ DEFINE_HOOK_FUNCTION(int, fchownat, EACCES, -1, int, dirfd, const char *, path, 
 
 DEFINE_HOOK_FUNCTION(int, chdir, EACCES, -1, const char *, path);
 DEFINE_HOOK_FUNCTION(int, fchdir, EACCES, -1, int, fd);
-DEFINE_HOOK_FUNCTION(char_ptr_t, getcwd, EACCES, NULL, char *, buf, size_t, size);
-DEFINE_HOOK_FUNCTION(char_ptr_t, get_current_dir_name, EACCES, NULL);
+DEFINE_HOOK_FUNCTION(char_ptr_t, getcwd, ENOMEM, NULL, char *, buf, size_t, size);
+
+DEFINE_HOOK_FUNCTION(char_ptr_t, get_current_dir_name, ENOMEM, NULL);
 
 DEFINE_HOOK_FUNCTION(int, dup, EAGAIN, -1, int, fd);
 DEFINE_HOOK_FUNCTION(int, dup2, EAGAIN, -1, int, fd, int, fd2);
@@ -131,3 +131,4 @@ DEFINE_HOOK_FUNCTION(int, ftruncate64, EACCES, -1, int, fd, __off64_t, length);
 DEFINE_HOOK_FUNCTION(int, brk, EACCES, -1, void *, addr);
 
 DEFINE_HOOK_FUNCTION(void_ptr_t, sbrk, EACCES, (void *)-1, long int, increment);
+

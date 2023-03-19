@@ -38,7 +38,7 @@ void write_function_fetch_result_json(
             false);
     json_write_key_value_number(
         "function-detected-count",
-        btree_t_function_call_footprint_size(fetch_result_display->function_tree),
+        count_testable_functions(fetch_result_display->function_tree),
         2,
         true);
 
@@ -81,7 +81,7 @@ void write_function_fetch_result_pretty(
             sizeof(buffer),
             "Functions detected count: %s%zi%s",
             BOLD,
-            btree_t_function_call_footprint_size(fetch_result_display->function_tree),
+            count_testable_functions(fetch_result_display->function_tree),
             RESET);
         log_info(buffer);
         if (is_option_set(TRACK_ALLOCATIONS_MASK, get_config()))

@@ -46,12 +46,13 @@ void test_allocation(t_function_call_footprint *allocation_info)
     int stdout_pipe[2];
     int stderr_pipe[2];
 
+    if (!allocation_info->should_test)
+        return;
     _allocation_test_count++;
     timeval_t start_time = get_time();
     const config_t *config = get_config();
     char record_output_enabled =
         !is_option_set(ALL_OUTPUT_MASK, config) || is_option_set(JSON_OUTPUT_MASK, config);
-
     if (pipe(stdin_pipe) == -1)
         log_fatal("test_allocation: pipe failed", true);
     if (record_output_enabled)
@@ -177,6 +178,8 @@ void test_allocation(t_function_call_footprint *allocation_info)
     free_setup_result(setup_result);
 }
 
+
+
 int allocations_test(
     int argc,
     char **argv,
@@ -190,7 +193,7 @@ int allocations_test(
     _symbolizer = symbolizer;
     _tmpfile_stdin = fetch_result->tmpfile_stdin;
     _allocation_test_count = 0;
-    _allocation_test_total_size = btree_t_function_call_footprint_size(fetch_result->function_tree);
+    _allocation_test_total_size = count_testable_functions(fetch_result->function_tree);
     btree_t_function_call_footprint_foreach(fetch_result->function_tree, test_allocation);
     fclose(_tmpfile_stdin);
     return _should_exit_fail;
