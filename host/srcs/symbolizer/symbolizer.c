@@ -122,6 +122,8 @@ t_symbolizer symbolizer_init(char *program_path)
         .write_fd = pipe_stdin[1],
         .parse_output = symbolizer_config->parse_output,
     };
+    if (new_symbolizer.read_file == NULL)
+        log_fatal("symbolizer_init: fdopen", true);
     return new_symbolizer;
 }
 

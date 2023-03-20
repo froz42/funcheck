@@ -29,6 +29,8 @@ char *get_program_in_path(const char *name)
     }
 
     char *path = getenv("PATH");
+    if (!path)
+        log_fatal("get_program_in_path: PATH not set", true);
     char *path_copy = strdup(path);
     if (!path_copy)
         log_fatal("get_program_in_path: strdup failed", true);

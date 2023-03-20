@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "record_io.h"
+#include "../logs/logs.h"
 
 
 /**
@@ -42,7 +43,8 @@ static void *record_routine(void *param)
 void launch_record(t_record_io *record_param)
 {
     record_param->fd_to_read = dup(record_param->fd_to_read);
-    pthread_create(&record_param->thread_id, NULL, record_routine, record_param);
+    if(pthread_create(&record_param->thread_id, NULL, record_routine, record_param) != 0)
+        log_fatal("record_io: pthread_create failed", true);
 }
 
 /**
