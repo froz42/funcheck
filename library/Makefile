@@ -28,6 +28,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/functions/unistd.c \
 			hook/functions/stdio.c \
 			hook/functions/fcntl.c \
+			hook/functions/stdlib.c \
 			hook/allocs/malloc.c \
 			hook/allocs/realloc.c \
 			hook/allocs/calloc.c \
