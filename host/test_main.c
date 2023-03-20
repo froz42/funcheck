@@ -1,10 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <signal.h>
 
 int main(void)
 {
-	long long unsigned int *p = (void *)0xdeadbeef;
-    printf("zu: %zu\n", p);
-    return EXIT_SUCCESS;
+    int fd = open("test_main.c", O_RDONLY);
+    if (fd == -1)
+    {
+        raise(SIGSEGV);
+    }
 }
