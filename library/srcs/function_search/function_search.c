@@ -23,6 +23,11 @@ int function_search_cmp(t_function_search *a, t_function_search *b)
     return strcmp(a->function_name, b->function_name);
 }
 
+/**
+ * @brief This function is used to get the malloc function.
+ * 
+ * @return void* the malloc function
+ */
 static void *get_malloc(void)
 {
     static void *malloc_ptr = NULL;

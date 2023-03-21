@@ -19,11 +19,21 @@ static bool_t _alloc_hooks_enabled = false;
 
 static const char *_hooked_function_name = NULL;
 
+/**
+ * @brief Set the hooked function name
+ * 
+ * @param function_name the name of the function
+ */
 void set_hooked_function_name(const char *function_name)
 {
 	_hooked_function_name = function_name;
 }
 
+/**
+ * @brief Get the hooked function name
+ * 
+ * @return const char* the name of the function
+ */
 const char *get_hooked_function_name(void)
 {
 	return _hooked_function_name;
@@ -52,48 +62,88 @@ void set_backtrace_to_block(ptr_address *backtrace, size_t iteration_to_block)
 	_current_iteration = 0;
 }
 
+/**
+ * @brief Get the backtrace to block
+ * 
+ */
 void disable_function_hooks(void)
 {
 	_function_hooks_enabled = false;
 }
 
+/**
+ * @brief Enable the function hooks
+ * 
+ */
 void enable_function_hooks(void)
 {
 	_function_hooks_enabled = true;
 }
 
+/**
+ * @brief Disable the alloc hooks
+ * 
+ */
 void disable_alloc_hooks(void)
 {
 	_alloc_hooks_enabled = false;
 }
 
+
+/**
+ * @brief Enable the alloc hooks
+ * 
+ */
 void enable_alloc_hooks(void)
 {
 	_alloc_hooks_enabled = true;
 }
 
+/**
+ * @brief Disable the function and alloc hooks
+ * 
+ */
 void disable_function_and_alloc_hooks(void)
 {
 	disable_function_hooks();
 	disable_alloc_hooks();
 }
 
+/**
+ * @brief Enable the function and alloc hooks
+ * 
+ */
 void enable_function_and_alloc_hooks(void)
 {
 	enable_function_hooks();
 	enable_alloc_hooks();
 }
 
+/**
+ * @brief Check if the function hooks are enabled
+ * 
+ * @return bool_t true if the function hooks are enabled, false otherwise
+ */
 bool_t is_function_hooks_enabled(void)
 {
 	return _function_hooks_enabled;
 }
 
+/**
+ * @brief Check if the alloc hooks are enabled
+ * 
+ * @return bool_t true if the alloc hooks are enabled, false otherwise
+ */
 bool_t is_alloc_hooks_enabled(void)
 {
 	return _alloc_hooks_enabled;
 }
 
+/**
+ * @brief Check if the function and alloc hooks are enabled
+ * 
+ * @return bool_t true if the function and alloc hooks are enabled, false otherwise
+ */
 bool_t is_hooks_enabled(void)
 {
 	return _function_hooks_enabled && _alloc_hooks_enabled;
