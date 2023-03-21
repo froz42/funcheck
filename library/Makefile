@@ -34,6 +34,12 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/functions/epoll.c \
 			hook/functions/select.c \
 			hook/functions/socket.c \
+			hook/functions/signal.c \
+			hook/functions/string.c \
+			hook/functions/wait.c \
+			hook/functions/stat.c \
+			hook/functions/mman.c \
+			hook/functions/semaphore.c \
 			hook/allocs/malloc.c \
 			hook/allocs/realloc.c \
 			hook/allocs/calloc.c \
