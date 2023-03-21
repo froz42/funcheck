@@ -139,11 +139,13 @@ void symbolizer_get_address_info(
     const ptr_address *address_list,
     t_address_info *address_infos)
 {
-    for (size_t i = 0; address_list[i]; i++)
+    size_t i = 0;
+    for (; address_list[i]; i++)
     {
         dprintf(symbolizer->write_fd, "%#zx\n", address_list[i]);
         t_address_info *address_info_ptr = &address_infos[i];
         address_info_ptr->address = (unsigned long)address_list[i];
         symbolizer->parse_output(symbolizer->read_file, address_info_ptr);
     }
+    address_infos[i].address = 0x0;
 }

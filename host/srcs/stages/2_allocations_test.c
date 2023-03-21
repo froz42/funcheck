@@ -176,6 +176,7 @@ void test_allocation(t_function_call_footprint *allocation_info)
         fclose(output_tmpfile);
     clear_functions(&function_tree);
     free_setup_result(setup_result);
+    free(crash_backtrace);
 }
 
 

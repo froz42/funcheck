@@ -63,5 +63,11 @@ char *get_program_in_path(const char *name)
  */
 bool_t is_program_in_path(const char *name)
 {
-    return get_program_in_path(name) != NULL;
+    char *program_path = get_program_in_path(name);
+    if (program_path)
+    {
+        free(program_path);
+        return true;
+    }
+    return false;
 }
