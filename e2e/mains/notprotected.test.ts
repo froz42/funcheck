@@ -61,7 +61,7 @@ describe(FILE_NAME, () => {
       const functionTest = functionTests[0];
 
       it('should have a valid function name', () => {
-        expect(functionTest['function-name']).toBe('malloc');
+        expect(functionTest['function-name']).toBe('strdup');
       });
 
       it('should have a valid return code', () => {

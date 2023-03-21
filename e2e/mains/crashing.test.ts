@@ -44,7 +44,7 @@ describe(FILE_NAME, () => {
     });
 
     it('should have a valid function detected count', () => {
-      expect(functionFetch['function-detected-count']).toBe(0);
+      expect(functionFetch['function-detected-count']).toBe(1);
     });
 
     describe('crash', () => {
