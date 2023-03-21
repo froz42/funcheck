@@ -12,11 +12,15 @@
  */
 void send_event(t_shared_info *shared_memory, t_event event)
 {
+	bool_t function_hooks_enabled = is_function_hooks_enabled();
+	disable_function_hooks();
 	shared_memory->event = event;
 	if (sem_post(&shared_memory->lock_host) == -1)
 		raise_error("send_event: sem_post", true);
 	if (sem_wait(&shared_memory->lock_guest) == -1)
 		raise_error("send_event: sem_wait", true);
+	if (function_hooks_enabled)
+		enable_function_hooks();
 }
 
 /**
@@ -27,9 +31,12 @@ void send_event(t_shared_info *shared_memory, t_event event)
  */
 void send_event_nonblocking(t_shared_info *shared_memory, t_event event)
 {
+	bool_t function_hooks_enabled = is_function_hooks_enabled();
 	shared_memory->event = event;
 	if (sem_post(&shared_memory->lock_host) == -1)
 		raise_error("send_event: sem_post", true);
+	if (function_hooks_enabled)
+		enable_function_hooks();
 }
 
 /**
