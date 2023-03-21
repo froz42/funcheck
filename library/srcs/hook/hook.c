@@ -96,7 +96,7 @@ bool_t is_alloc_hooks_enabled(void)
 
 bool_t is_hooks_enabled(void)
 {
-	return _function_hooks_enabled || _alloc_hooks_enabled;
+	return _function_hooks_enabled && _alloc_hooks_enabled;
 }
 
 
