@@ -40,13 +40,18 @@ SRCS	= 	main.c \
 			symbolizer/symbolizer.c \
 			json/json.c \
 			output/output.c \
-			output/output_allocation_track.c \
-			output/output_fetch_result.c \
-			output/output_test_result.c \
-			output/output_backtrace.c \
-			output/output_utils.c \
-			output/output_header.c \
+			output/utils/output_utils.c \
 			output/loading_bar/loading_bar.c \
+			output/pretty/pretty_header.c \
+			output/pretty/pretty_fetch_result.c \
+			output/pretty/pretty_test_result.c \
+			output/pretty/pretty_backtrace.c \
+			output/pretty/pretty_allocation_track.c \
+			output/json/json_header.c \
+			output/json/json_fetch_result.c \
+			output/json/json_test_result.c \
+			output/json/json_backtrace.c \
+			output/json/json_allocation_track.c \
 			logs/logs.c \
 			time/time.c \
 			stages/0_general_setup.c \

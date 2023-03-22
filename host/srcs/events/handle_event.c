@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include "../config/config.h"
 
+/**
+ * @brief handle the alloc event
+ * 
+ * @param symbolizer the symbolizer used to symbolize the backtrace
+ * @param function_tree the function tree used to store the function call footprint
+ * @param shared_info the shared info between the host and the guest
+ * @param is_alloc true if the event is an alloc event
+ */
 static void handle_function_call(
     t_symbolizer *symbolizer,
     btree_t_function_call_footprint **function_tree,
@@ -38,11 +46,23 @@ static void handle_function_call(
         add_function_call(symbolizer, function_tree, shared_info);
 }
 
+/**
+ * @brief handle the free event
+ * 
+ * @param function_tree the function tree used to store the function call footprint
+ * @param shared_info the shared info between the host and the guest
+ */
 static void handle_free(btree_t_function_call_footprint **function_tree, t_shared_info *shared_info)
 {
     remove_allocation(function_tree, shared_info->allocation.ptr);
 }
 
+/**
+ * @brief handle the events
+ * 
+ * @param params 
+ * @return void* 
+ */
 static void *handle_events_routine(t_handle_event_params *params)
 {
     while (1)
@@ -73,6 +93,13 @@ static void *handle_events_routine(t_handle_event_params *params)
     return (NULL);
 }
 
+
+/**
+ * @brief launch the handle events routine
+ * 
+ * @param params needed to launch the routine
+ * @return pthread_t the thread id
+ */
 pthread_t launch_handle_events(t_handle_event_params *params)
 {
     pthread_t thread;
@@ -84,6 +111,12 @@ pthread_t launch_handle_events(t_handle_event_params *params)
     return (thread);
 }
 
+/**
+ * @brief stop the handle events routine
+ * 
+ * @param thread the thread id
+ * @param shared_memory the shared memory between the host and the guest
+ */
 void stop_handle_events(pthread_t thread, t_shared_info *shared_memory)
 {
     t_event saved_event = shared_memory->event;
