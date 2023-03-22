@@ -1,31 +1,30 @@
+#include "utils/output_utils.h"
+#include "../stages/stages.h"
 #include "../config/config.h"
+#include "../utils/color.h"
 #include "../utils/bool.h"
 #include "../json/json.h"
-#include "../host.h"
-#include "../stages/stages.h"
-#include "../backtrace/backtrace.h"
 #include "../logs/logs.h"
-#include "../utils/color.h"
-#include "output.h"
-#include <stdio.h>
+#include "json/json_output.h"
+#include "pretty/pretty_output.h"
 
-#define SIZE_VERTICAL_BAR 30
-#define BAR_STR "─"
-
-void write_tail(void)
+/**
+ * @brief Write the header of the output
+ * 
+ * @param args_guest the arguments of the guest program
+ */
+void write_header(args_t args_guest)
 {
     if (is_json_output_set())
-        json_write_object_end(0, true);
+        write_header_json(args_guest);
+    else
+        write_header_pretty(args_guest);
 }
 
-void write_delim_bar(void)
-{
-    fprintf(stdout, "%s", YELLOW);
-    for (size_t i = 0; i < SIZE_VERTICAL_BAR; i++)
-        fprintf(stdout, "%s", BAR_STR);
-    fprintf(stdout, "%s\n", RESET);
-}
-
+/**
+ * @brief Write the head of the function fetch output
+ * 
+ */
 void write_head_function_fetch(void)
 {
     if (is_json_output_set())
@@ -37,18 +36,31 @@ void write_head_function_fetch(void)
     }
 }
 
+/**
+ * @brief Write the tail of the function fetch output
+ * 
+ */
 void write_tail_function_fetch(void)
 {
     if (is_json_output_set())
         json_write_object_end(1, false);
 }
 
+/**
+ * @brief Write the head of the function tests output
+ * 
+ */
 void write_head_function_tests(void)
 {
     if (is_json_output_set())
         json_write_key_array("function-tests", 1);
 }
 
+/**
+ * @brief Write the tail of the function tests output
+ * 
+ * @param success true if all tests passed, false otherwise
+ */
 void write_tail_function_tests(bool_t success)
 {
     if (is_json_output_set())
@@ -62,14 +74,40 @@ void write_tail_function_tests(bool_t success)
     }
 }
 
-void write_head_function_test_header(void)
+/**
+ * @brief Write the function fetch result
+ * 
+ * @param fetch_result_display the fetch result to write
+ */
+void write_function_fetch_result(
+    t_fetch_result_display *fetch_result_display)
 {
     if (is_json_output_set())
-        json_write_key_array("functions-tests", 1);
+        write_function_fetch_result_json(fetch_result_display);
+    else
+        write_function_fetch_result_pretty(fetch_result_display);
 }
 
-void write_tail_function_test_header(void)
+/**
+ * @brief Write the test result
+ * 
+ * @param result the test result to write
+ * @param is_last true if it is the last test result, false otherwise
+ */
+void write_test_result(t_test_result_display *result, bool_t is_last)
 {
     if (is_json_output_set())
-        json_write_array_end(1, true);
+        write_test_result_json(result, is_last);
+    else
+        write_test_result_pretty(result);
+}
+
+/**
+ * @brief Write the tail of the output
+ * 
+ */
+void write_tail(void)
+{
+    if (is_json_output_set())
+        json_write_object_end(0, true);
 }

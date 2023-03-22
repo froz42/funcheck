@@ -3,6 +3,12 @@
 #include "../utils/bool.h"
 #include <string.h>
 
+/**
+ * @brief This function is used to get the size of the backtrace
+ * 
+ * @param address_list the backtrace
+ * @return size_t the size of the backtrace
+ */
 static size_t backtrace_get_size(ptr_address *address_list)
 {
     size_t i = 0;
@@ -11,6 +17,13 @@ static size_t backtrace_get_size(ptr_address *address_list)
     return i;
 }
 
+
+/**
+ * @brief This function is used to check if a function should be ignored
+ * 
+ * @param function_name the name of the function
+ * @return true if the function should be ignored
+*/
 bool_t should_ignore_function(const char *function_name)
 {
     static const char *functions_to_ignores[] = {
@@ -29,6 +42,14 @@ bool_t should_ignore_function(const char *function_name)
     return false;
 }
 
+/**
+ * @brief This function is used to process the backtrace to get information about the functions
+ * 
+ * @param dest the destination of the backtrace (can be NULL)
+ * @param symbolizer the symbolizer
+ * @param backtrace the backtrace
+ * @return t_address_info* the backtrace (malloced if dest is NULL)
+ */
 t_address_info *backtrace_process(
     t_address_info *dest,
     t_symbolizer *symbolizer,
