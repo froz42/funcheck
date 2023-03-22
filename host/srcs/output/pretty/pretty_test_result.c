@@ -12,7 +12,7 @@ static msseconds_t _mean_run_time = UNDEFINED_TIME;
 
 /**
  * @brief compute the mean run time of the tests
- * 
+ *
  * @param result the result of the test
  */
 static void compute_mean_run_time(t_test_result_display *result)
@@ -28,13 +28,14 @@ static void compute_mean_run_time(t_test_result_display *result)
 
 /**
  * @brief write the result of a test if it crashed
- * 
+ *
  * @param result the result of the test
  * @param config the config of the program
  */
 static void write_test_result_pretty_crash(t_test_result_display *result, const config_t *config)
 {
-    erase_line();
+    if (is_a_tty())
+        erase_line();
     fprintf(
         stdout,
         "┏%s %s%s %s\n",
@@ -62,7 +63,7 @@ static void write_test_result_pretty_crash(t_test_result_display *result, const 
 
 /**
  * @brief write the result of a test
- * 
+ *
  * @param result the result of the test
  */
 void write_test_result_pretty(t_test_result_display *result)
@@ -81,6 +82,8 @@ void write_test_result_pretty(t_test_result_display *result)
 
     if (!is_option_set(ALL_OUTPUT_MASK, config))
     {
+        if (!is_a_tty())
+            return;
         compute_mean_run_time(result);
 
         const size_t remaining_test = result->total_tests - result->actual_test;

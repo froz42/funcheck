@@ -10,4 +10,5 @@ void write_delim_bar(void);
 bool_t is_json_output_set(void);
 void output_file(FILE *file);
 void write_spaces(int count);
+bool_t is_a_tty(void);
 #endif

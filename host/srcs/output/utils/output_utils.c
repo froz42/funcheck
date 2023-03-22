@@ -2,13 +2,14 @@
 #include "../../config/config.h"
 #include "../../utils/color.h"
 #include <stdio.h>
+#include <unistd.h>
 
 #define SIZE_VERTICAL_BAR 30
 #define BAR_STR "─"
 
 /**
  * @brief utils passed to foreach to count the number of allocation nodes
- * 
+ *
  * @param node the node to count
  * @return size_t the number of allocation nodes
  */
@@ -27,13 +28,13 @@ static size_t count_allocation_nodes(t_function_call_footprint *node)
 size_t count_allocations_functions(btree_t_function_call_footprint *function_tree)
 {
     return btree_t_function_call_footprint_count(
-            function_tree,
-            count_allocation_nodes);
+        function_tree,
+        count_allocation_nodes);
 }
 
 /**
  * @brief Get the backtrace size of symbolized elements
- * 
+ *
  * @param backtrace the backtrace
  * @return size_t the size of the backtrace
  */
@@ -54,7 +55,7 @@ size_t get_symbolized_backtrace_size(t_address_info *backtrace)
 
 /**
  * @brief Write a delimiter bar
- * 
+ *
  */
 void write_delim_bar(void)
 {
@@ -64,10 +65,9 @@ void write_delim_bar(void)
     fprintf(stdout, "%s\n", RESET);
 }
 
-
 /**
  * @brief Check if the json output is set in the config
- * 
+ *
  * @return bool_t true if the json output is set
  */
 bool_t is_json_output_set(void)
@@ -77,7 +77,7 @@ bool_t is_json_output_set(void)
 
 /**
  * @brief Output a FILE * to stdout
- * 
+ *
  * @param file the file pointer to output
  */
 void output_file(FILE *file)
@@ -90,10 +90,18 @@ void output_file(FILE *file)
 
 /**
  * @brief Write count spaces
- * 
+ *
  * @param count the number of spaces to write
  */
 void write_spaces(int count)
 {
     fprintf(stdout, "%*s", (int)count, "");
+}
+
+bool_t is_a_tty(void)
+{
+    static int is_a_tty = -1;
+    if (is_a_tty == -1)
+        is_a_tty = isatty(fileno(stdout));
+    return is_a_tty;
 }
