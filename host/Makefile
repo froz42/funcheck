@@ -54,9 +54,7 @@ SRCS	= 	main.c \
 			output/json/json_allocation_track.c \
 			logs/logs.c \
 			time/time.c \
-			stages/0_general_setup.c \
-			stages/1_allocations_fetch.c \
-			stages/2_allocations_test.c
+			functions_fetch/functions_fetch.c
 
 
 OBJS	= $(addprefix objs/, ${SRCS:$(FILE_EXTENSION)=.o})

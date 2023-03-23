@@ -6,6 +6,12 @@
 #include "../utils/bool.h"
 #include "../logs/logs.h"
 
+/**
+ * @brief Check if a file is executable
+ * 
+ * @param path The path of the file
+ * @return bool_t true if the file is executable, false otherwise
+ */
 static bool_t is_executable(const char *path)
 {
     struct stat sb;

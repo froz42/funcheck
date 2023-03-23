@@ -6,7 +6,6 @@
 #include "record_io.h"
 #include "../logs/logs.h"
 
-
 /**
  * @brief Record the output of a file descriptor
  * 
@@ -92,4 +91,14 @@ void write_record_to_stdout(FILE *record)
         buffer[read_size] = '\0';
         printf("%s", buffer);
     }
+}
+
+t_record_io init_record_io(int fd_to_read, int fd_to_write)
+{
+    t_record_io record_param;
+
+    record_param.fd_to_read = fd_to_read;
+    record_param.fd_to_write = fd_to_write;
+    record_param.tmp_file_store = NULL;
+    return record_param;
 }

@@ -126,6 +126,7 @@ void json_write_key_value_file(
     size_t indent_count,
     bool_t is_last)
 {
+    rewind(file_value);
     json_write_indent(indent_count);
     printf("\"%s\": \"", key);
 

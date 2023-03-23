@@ -1,6 +1,8 @@
 #ifndef PRETTY_OUTPUT_H
 #define PRETTY_OUTPUT_H
 
+#include "../output.h"
+
 void write_allocation_track_pretty(
     btree_t_function_call_footprint *function_tree,
     const char *function_blocked,

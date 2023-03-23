@@ -1,9 +1,9 @@
 #include "../../logs/logs.h"
 #include "../../utils/color.h"
-#include "../../stages/stages.h"
 #include "../../config/config.h"
-#include "pretty_output.h"
 #include "../utils/output_utils.h"
+#include "../output.h"
+#include "pretty_output.h"
 
 /**
  * @brief Write the fail fetch result in pretty format

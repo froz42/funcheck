@@ -59,15 +59,6 @@ t_fetch_result allocations_fetch(
     }
     config_shared_memory_fetch(setup_result.shared_memory);
 
-    t_run_info run_infos = {
-        .argc = argc,
-        .argv = argv,
-        .envp = setup_result.new_envp,
-        .shared_info = setup_result.shared_memory,
-        .pipe_to_stdin = COPY_PIPE(stdin_pipe),
-        .pipe_to_stdout = COPY_PIPE(stdout_pipe),
-        .pipe_to_stderr = COPY_PIPE(stderr_pipe)};
-
     FILE *tmpfile_output = NULL;
 
     if (is_json_output)
@@ -111,6 +102,14 @@ t_fetch_result allocations_fetch(
 
     pthread_t event_thread = launch_handle_events(&params);
 
+    t_run_info run_infos = {
+        .argc = argc,
+        .argv = argv,
+        .envp = setup_result.new_envp,
+        .shared_info = setup_result.shared_memory,
+        .pipe_to_stdin = COPY_PIPE(stdin_pipe),
+        .pipe_to_stdout = COPY_PIPE(stdout_pipe),
+        .pipe_to_stderr = COPY_PIPE(stderr_pipe)};
     int ret = run(&run_infos);
     int status = 0;
     if (waitpid(ret, &status, 0) == -1)

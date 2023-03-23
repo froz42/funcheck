@@ -6,12 +6,53 @@
 #include "run/runner.h"
 #include "host.h"
 #include "shared_memory/shared_memory.h"
-#include "stages/stages.h"
 #include "symbolizer/symbolizer.h"
 #include "path/path.h"
 #include "config/config.h"
 #include "output/output.h"
 #include "logs/logs.h"
+#include "functions_fetch/functions_fetch.h"
+
+typedef struct
+{
+	t_symbolizer symbolizer;
+	char *program_path;
+} init_program_t;
+
+static init_program_t init_program(args_t *args_guest)
+{
+	const config_t *config = get_config();
+
+	if (is_option_set(HELP_MASK, config))
+	{
+		display_help();
+		exit(EXIT_SUCCESS);
+	}
+
+	if (is_option_set(VERSION_MASK, config))
+	{
+		printf("%s\n", VERSION);
+		exit(EXIT_SUCCESS);
+	}
+
+	if (args_guest->argc == 0)
+	{
+		log_error("No program specified, use --help for more information");
+		exit(EXIT_FAILURE);
+	}
+
+	char *program_path = get_program_in_path(args_guest->argv[0]);
+	if (program_path == NULL)
+	{
+		log_error("Program not found or not executable");
+		exit(EXIT_FAILURE);
+	}
+
+	t_symbolizer symbolizer = symbolizer_init(program_path);
+
+	init_program_t result = {symbolizer, program_path};
+	return result;
+}
 
 /**
  * @brief The main function of the host
@@ -25,53 +66,24 @@ int main(int argc, char **argv, char **envp)
 {
 	args_t args_guest = parse_args(argc, argv);
 
-	const config_t *config = get_config();
-	
-	if (is_option_set(HELP_MASK, config))
-	{
-		display_help();
-		return EXIT_SUCCESS;
-	}
-
-	if (is_option_set(VERSION_MASK, config))
-	{
-		printf("%s\n", VERSION);
-		return EXIT_SUCCESS;
-	}
-	
-	if (args_guest.argc == 0)
-	{
-		log_error("No program specified, use --help for more information");
-		return EXIT_FAILURE;
-	}
-
-	char *program_path = get_program_in_path(args_guest.argv[0]);
-	if (program_path == NULL)
-	{
-		log_error("Program not found or not executable");
-		return EXIT_FAILURE;
-	}
-
-	t_symbolizer symbolizer = symbolizer_init(program_path);
+	init_program_t init_program_infos = init_program(&args_guest);
 
 	write_header(args_guest);
 
 	write_head_function_fetch();
-	t_fetch_result fetch_result = allocations_fetch(
-		args_guest.argc,
-		args_guest.argv,
-		envp, &symbolizer);
+	t_fetch_result fetch_result = functions_fetch(
+		&args_guest,
+		envp,
+		&init_program_infos.symbolizer
+	);
 	write_tail_function_fetch();
-	
 
 	write_head_function_tests();
-	int res = allocations_test(args_guest.argc, args_guest.argv, envp, &fetch_result, &symbolizer);
+	int res = 0;
 	write_tail_function_tests(!res);
 	clear_fetch_result(&fetch_result);
-
-	symbolizer_stop(&symbolizer);
-	free(program_path);
-
+	symbolizer_stop(&init_program_infos.symbolizer);
+	free(init_program_infos.program_path);
 	write_tail();
 
 	return res;

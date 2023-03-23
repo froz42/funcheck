@@ -1,5 +1,4 @@
 #include "utils/output_utils.h"
-#include "../stages/stages.h"
 #include "../config/config.h"
 #include "../utils/color.h"
 #include "../utils/bool.h"
