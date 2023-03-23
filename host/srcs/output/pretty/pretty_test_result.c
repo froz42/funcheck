@@ -1,7 +1,6 @@
 #include "../utils/output_utils.h"
 #include "../../utils/color.h"
 #include "../../time/time.h"
-#include "../../stages/stages.h"
 #include "../../config/config.h"
 #include "../loading_bar/loading_bar.h"
 #include "pretty_output.h"

@@ -2,7 +2,15 @@
 #define SYMBOLIZER_H
 
 #include <stdio.h>
-#include "../backtrace/backtrace.h"
+
+typedef struct s_address_info
+{
+    ptr_address address;
+    char function_name[256];
+    char file_name[256];
+    unsigned int line_number;
+    unsigned int column_number;
+} t_address_info;
 
 typedef struct s_symbolizer
 {

@@ -8,7 +8,7 @@
 #include "../logs/logs.h"
 
 /**
- * @brief Generare shared memory to be shared with the guest
+ * @brief Generate shared memory to be shared with the guest
  *
  * @param name the name of the shared memory
  * @return t_shared_info* the shared memory
@@ -27,9 +27,7 @@ t_shared_info *generate_shared_memory(char *name)
 		log_fatal("generate_shared_memory: mmap", true);
 
 	bzero(shared_info, sizeof(t_shared_info));
-
 	close(fd);
-
 	return shared_info;
 }
 

@@ -1,5 +1,6 @@
 #include "../../json/json.h"
 #include "../output.h"
+#include "../../host.h"
 
 /**
  * @brief Write the header in json format

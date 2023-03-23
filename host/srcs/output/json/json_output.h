@@ -2,7 +2,7 @@
 #define JSON_OUTPUT_H
 
 #include "../../config/config.h"
-#include "../../stages/stages.h"
+#include "../output.h"
 
 void write_header_json(args_t args_guest);
 void write_function_fetch_result_json(
