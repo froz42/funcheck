@@ -37,7 +37,7 @@
 #define MAGENTA "\033[35m"
 #define CYAN "\033[36m"
 #define WHITE "\033[37m"
-#define GRAY "\033[90m"
+#define GRAY  "\033[0;37m"
 
 /* background colors */
 
