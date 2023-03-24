@@ -51,6 +51,7 @@ SRCS	= 	main.c \
 			output/pretty/pretty_test_result.c \
 			output/pretty/pretty_backtrace.c \
 			output/pretty/pretty_allocation_track.c \
+			output/pretty/pretty_tail_function_tests.c \
 			output/json/json_header.c \
 			output/json/json_fetch_result.c \
 			output/json/json_test_result.c \

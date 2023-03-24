@@ -29,5 +29,6 @@ void write_header_pretty(args_t args_guest);
 void write_function_fetch_result_pretty(
     t_fetch_result_display *fetch_result_display);
 void write_test_result_pretty(t_test_result_display *result);
+void write_tail_function_tests_pretty(function_tests_result_t *functions_tests_result);
 
 #endif
