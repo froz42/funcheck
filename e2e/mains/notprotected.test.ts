@@ -95,7 +95,7 @@ describe(FILE_NAME, () => {
         expect(backtrace.address).toBeDefined();
         expect(backtrace.function).toBe('main');
         expect(backtrace.file).toBe(FILE_NAME);
-        expect(backtrace.line).toBe(8);
+        expect(backtrace.line).toBe(25);
         expect(backtrace.column).toBe(17);
       });
 
@@ -113,7 +113,7 @@ describe(FILE_NAME, () => {
         expect(backtraceElem?.address).toBeDefined();
         expect(backtraceElem?.function).toBe('main');
         expect(backtraceElem?.file).toBe(FILE_NAME);
-        expect(backtraceElem?.line).toBe(10);
+        expect(backtraceElem?.line).toBe(27);
         expect(backtraceElem?.column).toBe(9);
       });
     });

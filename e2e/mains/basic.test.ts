@@ -35,7 +35,7 @@ describe(FILE_NAME, () => {
     });
 
     it('should have a valid program name', () => {
-      expect(outputObject.program).toBe('fail');
+      expect(outputObject.program).toBe(OUTPUT_NAME);
     });
 
     it('should have a valid arguments', () => {
@@ -95,7 +95,7 @@ describe(FILE_NAME, () => {
         expect(backtrace.address).toBeDefined();
         expect(backtrace.function).toBe('main');
         expect(backtrace.file).toBe(FILE_NAME);
-        expect(backtrace.line).toBe(7);
+        expect(backtrace.line).toBe(24);
         expect(backtrace.column).toBe(17);
       });
     });

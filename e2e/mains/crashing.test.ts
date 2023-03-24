@@ -106,7 +106,7 @@ describe(FILE_NAME, () => {
                 });
             
                 it('should have a valid line', () => {
-                    expect(backtraceItem?.line).toBe(8);
+                    expect(backtraceItem?.line).toBe(25);
                 });
             
                 it('should have a valid column', () => {
