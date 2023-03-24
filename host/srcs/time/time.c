@@ -58,8 +58,10 @@ const char *get_time_string(msseconds_t lapse)
     int minutes = seconds / 60;
 
     if (minutes > 0)
-        sprintf(buffer, "%dmin %ds", minutes, seconds % 60);
+        sprintf(buffer, "%d min %d sec", minutes, seconds % 60);
+    else if (seconds > 0)
+        sprintf(buffer, "%d sec", seconds % 60);
     else
-        sprintf(buffer, "%dsec", seconds % 60);
+        sprintf(buffer, "%d ms", lapse);
     return buffer;
 }

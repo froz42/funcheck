@@ -22,6 +22,8 @@
 #include "../utils/bool.h"
 #include "../time/time.h"
 #include "../function_footprint/function_footprint.h"
+#include "../functions_test/functions_test.h"
+
 typedef struct
 {
     const char *crash_name;
@@ -49,7 +51,7 @@ void write_header(args_t args_guest);
 void write_head_function_fetch(void);
 void write_tail_function_fetch(void);
 void write_head_function_tests(void);
-void write_tail_function_tests(bool_t success);
+void write_tail_function_tests(function_tests_result_t *functions_tests_result);
 void write_function_fetch_result(
     t_fetch_result_display *fetch_result_display);
 void write_test_result(t_test_result_display *result, bool_t is_last);

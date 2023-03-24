@@ -92,22 +92,21 @@ int main(int argc, char **argv, char **envp)
 	t_fetch_result fetch_result = functions_fetch(
 		&args_guest,
 		envp,
-		&init_program_infos.symbolizer
-	);
+		&init_program_infos.symbolizer);
 	write_tail_function_fetch();
 
 	write_head_function_tests();
-	size_t failed_tests_count = functions_test(
+	function_tests_result_t failed_tests_count = functions_test(
 		args_guest,
 		envp,
 		&fetch_result,
 		&init_program_infos.symbolizer
 	);
-	write_tail_function_tests(!failed_tests_count);
+	write_tail_function_tests(&failed_tests_count);
 	clear_fetch_result(&fetch_result);
 	symbolizer_stop(&init_program_infos.symbolizer);
 	free(init_program_infos.program_path);
 	write_tail();
 
-	return failed_tests_count ? EXIT_FAILURE : EXIT_SUCCESS;
+	return failed_tests_count.nb_failed_tests ? EXIT_FAILURE : EXIT_SUCCESS;
 }
