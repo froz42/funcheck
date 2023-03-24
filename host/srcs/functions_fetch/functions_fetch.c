@@ -6,28 +6,9 @@
 #include "../events/handle_event.h"
 #include "../output/output.h"
 #include "../logs/logs.h"
+#include "../run/runner.h"
 #include <sys/wait.h>
 #include <unistd.h>
-
-typedef struct
-{
-    int stdin_pipe[2];
-    int stdout_pipe[2];
-    int stderr_pipe[2];
-} t_pipes_fetch;
-
-typedef struct
-{
-    t_record_io record_stdin;
-    t_record_io record_stdout;
-    t_record_io record_stderr;
-} t_records_fetch;
-
-typedef struct
-{
-    const char *crash_name;
-    t_address_info *backtrace;
-} t_crash_info;
 
 /**
  * @brief Config the memory to fetch the functions
@@ -42,9 +23,124 @@ static void config_shared_memory_fetch(t_shared_info *shared_info, const config_
     sem_init(&shared_info->lock_guest, 1, 0);
 }
 
-static t_pipes_fetch setup_pipes(const config_t *config)
+/**
+ * @brief Close the unused pipes
+ *
+ * @param pipes the pipes
+ * @param config the config of the program
+ */
+void close_unused_pipes(const t_pipes *pipes, const config_t *config)
 {
-    t_pipes_fetch pipes_fetch;
+    close(pipes->stdin_pipe[0]);
+
+    if (is_option_set(JSON_OUTPUT_MASK, config))
+    {
+        close(pipes->stdout_pipe[0]);
+        close(pipes->stderr_pipe[0]);
+    }
+}
+
+/**
+ * @brief Close the remaining pipes
+ * 
+ * @param pipes the pipes
+ * @param config the config of the program
+ */
+void close_remaining_pipes(const t_pipes *pipes, const config_t *config)
+{
+    close(pipes->stdin_pipe[1]);
+
+    if (is_option_set(JSON_OUTPUT_MASK, config))
+    {
+        close(pipes->stdout_pipe[1]);
+        close(pipes->stderr_pipe[1]);
+    }
+}
+
+/**
+ * @brief Set the up tmp files objects for the fetch
+ *
+ * @param tmpfile_output temporary file for the output
+ * @param tmpfile_stdin temporary file for the stdin
+ * @param config the config of the program
+ */
+static void setup_tmp_files(FILE **tmpfile_output, FILE **tmpfile_stdin, const config_t *config)
+{
+    if (is_option_set(JSON_OUTPUT_MASK, config))
+    {
+        *tmpfile_output = tmpfile();
+        if (*tmpfile_output == NULL)
+            log_fatal("functions_fetch: tmpfile failed", true);
+    }
+
+    *tmpfile_stdin = tmpfile();
+    if (*tmpfile_stdin == NULL)
+        log_fatal("functions_fetch: tmpfile failed", true);
+}
+
+/**
+ * @brief Set the up the records for the fetch
+ *
+ * @param pipes the pipes
+ * @param config the config of the program
+ * @return t_records the records
+ */
+static t_records setup_record_io(t_pipes *pipes, const config_t *config)
+{
+    t_records records;
+
+    records.record_stdin = init_record_io(STDIN_FILENO, pipes->stdin_pipe[1]);
+    records.record_stdout = init_record_io(pipes->stdout_pipe[0], NO_FD);
+    records.record_stderr = init_record_io(pipes->stderr_pipe[0], NO_FD);
+
+    FILE *tmpfile_output = NULL;
+    setup_tmp_files(&tmpfile_output, &records.record_stdin.tmp_file_store, config);
+    records.record_stdout.tmp_file_store = tmpfile_output;
+    records.record_stderr.tmp_file_store = tmpfile_output;
+    return records;
+}
+
+/**
+ * @brief Launch the records
+ *
+ * @param records the records
+ * @param config the config of the program
+ */
+static void launch_records(t_records *records, const config_t *config)
+{
+    launch_record(&records->record_stdin);
+    if (is_option_set(JSON_OUTPUT_MASK, config))
+    {
+        launch_record(&records->record_stdout);
+        launch_record(&records->record_stderr);
+    }
+}
+
+/**
+ * @brief Stop the records
+ *
+ * @param records the records
+ * @param config the config of the program
+ */
+static void stop_records(t_records *records, const config_t *config)
+{
+    stop_record(&records->record_stdin);
+    if (is_option_set(JSON_OUTPUT_MASK, config))
+    {
+        stop_record(&records->record_stdout);
+        stop_record(&records->record_stderr);
+    }
+}
+
+/**
+ * @brief Set the up pipes for the fetch
+ *
+ * @param config the config of the program
+ * @return t_pipes the pipes
+ */
+static t_pipes setup_pipes(const config_t *config)
+{
+    t_pipes pipes_fetch;
     if (pipe(pipes_fetch.stdin_pipe) == -1)
         log_fatal("functions_fetch: pipe failed", true);
 
@@ -65,82 +161,21 @@ static t_pipes_fetch setup_pipes(const config_t *config)
     return pipes_fetch;
 }
 
-void close_unused_pipes(const t_pipes_fetch *pipes, const config_t *config)
-{
-    close(pipes->stdin_pipe[0]);
-
-    if (is_option_set(JSON_OUTPUT_MASK, config))
-    {
-        close(pipes->stdout_pipe[0]);
-        close(pipes->stderr_pipe[0]);
-    }
-}
-
-void close_remaining_pipes(const t_pipes_fetch *pipes, const config_t *config)
-{
-    close(pipes->stdin_pipe[1]);
-
-    if (is_option_set(JSON_OUTPUT_MASK, config))
-    {
-        close(pipes->stdout_pipe[1]);
-        close(pipes->stderr_pipe[1]);
-    }
-}
-
-static void setup_tmp_files(FILE **tmpfile_output, FILE **tmpfile_stdin, const config_t *config)
-{
-    if (is_option_set(JSON_OUTPUT_MASK, config))
-    {
-        *tmpfile_output = tmpfile();
-        if (*tmpfile_output == NULL)
-            log_fatal("functions_fetch: tmpfile failed", true);
-    }
-
-    *tmpfile_stdin = tmpfile();
-    if (*tmpfile_stdin == NULL)
-        log_fatal("functions_fetch: tmpfile failed", true);
-}
-
-static t_records_fetch setup_record_io(t_pipes_fetch *pipes, const config_t *config)
-{
-    t_records_fetch records;
-
-    records.record_stdin = init_record_io(STDIN_FILENO, pipes->stdin_pipe[1]);
-    records.record_stdout = init_record_io(pipes->stdout_pipe[0], NO_FD);
-    records.record_stderr = init_record_io(pipes->stderr_pipe[0], NO_FD);
-
-    FILE *tmpfile_output = NULL;
-    setup_tmp_files(&tmpfile_output, &records.record_stdin.tmp_file_store, config);
-    records.record_stdout.tmp_file_store = tmpfile_output;
-    records.record_stderr.tmp_file_store = tmpfile_output;
-    return records;
-}
-
-static void launch_records(t_records_fetch *records, const config_t *config)
-{
-    launch_record(&records->record_stdin);
-    if (is_option_set(JSON_OUTPUT_MASK, config))
-    {
-        launch_record(&records->record_stdout);
-        launch_record(&records->record_stderr);
-    }
-}
-
-static void stop_records(t_records_fetch *records, const config_t *config)
-{
-    stop_record(&records->record_stdin);
-    if (is_option_set(JSON_OUTPUT_MASK, config))
-    {
-        stop_record(&records->record_stdout);
-        stop_record(&records->record_stderr);
-    }
-}
-
+/**
+ * @brief run the program to fetch the functions
+ *
+ * @param params the parameters for the handle events thread
+ * @param records the records
+ * @param run_infos the run infos
+ * @param pipes the pipes
+ * @param config the config of the program
+ * @return int the exit status of the program
+ */
 static int run_function_fetch(
     t_handle_event_params *params,
-    t_records_fetch *records,
+    t_records *records,
     t_run_info *run_infos,
-    t_pipes_fetch *pipes,
+    t_pipes *pipes,
     const config_t *config)
 {
     pthread_t event_thread = launch_handle_events(params);
@@ -157,22 +192,14 @@ static int run_function_fetch(
     return WEXITSTATUS(status);
 }
 
-t_crash_info get_crash_infos(
-    t_runner_setup *runner_setup,
-    t_symbolizer *symbolizer)
-{
-    t_crash_info crash_infos = {0};
-    if (runner_setup->shared_memory->event == CRASH)
-    {
-        crash_infos.crash_name = runner_setup->shared_memory->function_name;
-        crash_infos.backtrace = backtrace_process(
-            NULL,
-            symbolizer,
-            runner_setup->shared_memory->backtrace);
-    }
-    return crash_infos;
-}
-
+/**
+ * @brief Fetch the functions of the program
+ * 
+ * @param guest_args arguments of the program
+ * @param envp environment variables of the program
+ * @param symbolizer the symbolizer
+ * @return t_fetch_result the result of the fetch
+ */
 t_fetch_result functions_fetch(
     args_t *guest_args,
     char **envp,
@@ -180,10 +207,10 @@ t_fetch_result functions_fetch(
 {
     const config_t *config = get_config();
 
-    t_pipes_fetch pipes = setup_pipes(config);
+    t_pipes pipes = setup_pipes(config);
 
     t_fetch_result fetch_result = {0};
-    t_records_fetch records = setup_record_io(&pipes, config);
+    t_records records = setup_record_io(&pipes, config);
 
     fetch_result.tmpfile_stdin = records.record_stdin.tmp_file_store;
 
@@ -207,7 +234,7 @@ t_fetch_result functions_fetch(
     };
     int status = run_function_fetch(&params, &records, &run_infos, &pipes, config);
 
-    t_crash_info crash_infos = get_crash_infos(&runner_setup, symbolizer);
+    t_crash_info crash_infos = get_crash_infos(runner_setup.shared_memory, symbolizer);
     t_fetch_result_display result_display = {
         .function_tree = fetch_result.function_tree,
         .tmpfile_output = records.record_stdout.tmp_file_store,
@@ -226,6 +253,11 @@ t_fetch_result functions_fetch(
     return fetch_result;
 }
 
+/**
+ * @brief Clear the fetch result
+ * 
+ * @param result the result to clear
+ */
 void clear_fetch_result(t_fetch_result *result)
 {
     fclose(result->tmpfile_stdin);

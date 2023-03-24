@@ -12,6 +12,7 @@
 #include "output/output.h"
 #include "logs/logs.h"
 #include "functions_fetch/functions_fetch.h"
+#include "functions_test/functions_test.h"
 
 typedef struct
 {
@@ -79,12 +80,17 @@ int main(int argc, char **argv, char **envp)
 	write_tail_function_fetch();
 
 	write_head_function_tests();
-	int res = 0;
-	write_tail_function_tests(!res);
+	size_t failed_tests_count = functions_test(
+		args_guest,
+		envp,
+		&fetch_result,
+		&init_program_infos.symbolizer
+	);
+	write_tail_function_tests(!failed_tests_count);
 	clear_fetch_result(&fetch_result);
 	symbolizer_stop(&init_program_infos.symbolizer);
 	free(init_program_infos.program_path);
 	write_tail();
 
-	return res;
+	return failed_tests_count ? EXIT_FAILURE : EXIT_SUCCESS;
 }
