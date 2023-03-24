@@ -22,6 +22,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  release:
+    types: [published]
 
 # compile library keep the output
 # compile host and keep the output
@@ -92,3 +94,41 @@ jobs:
         with:
           cmd: test
           dir: 'e2e'
+    
+  release:
+    name: Publish artifacts
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.event_name == 'release'
+    # content write and read are needed for the changelog
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get libfuncheck.so
+        uses: actions/download-artifact@v3
+        with:
+          name: libfuncheck.so
+          path: library
+      - name: Get funcheck
+        uses: actions/download-artifact@v3
+        with:
+          name: funcheck
+          path: host
+      - name: upload libfuncheck.so
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: library/libfuncheck.so
+          asset_name: libfuncheck.so
+          tag: ${{ github.ref }}
+          overwrite: true
+      - name: upload funcheck
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: host/funcheck
+          asset_name: funcheck
+          tag: ${{ github.ref }}
+          overwrite: true
