@@ -40,6 +40,13 @@ static const t_symbolizer_config *get_symbolizer_config(void)
     exit(EXIT_FAILURE);
 }
 
+/**
+ * @brief This function will generate the argv array for the symbolizer.
+ * 
+ * @param program_name symbolizer name
+ * @param options symbolizer options
+ * @return char** the argv array (must be freed)
+ */
 static char **generate_argv(const char *program_name, char *options)
 {
     // tokenize options
@@ -72,6 +79,12 @@ static char **generate_argv(const char *program_name, char *options)
     return argv;
 }
 
+/**
+ * @brief This function will initialize the symbolizer.
+ * 
+ * @param program_path the path of the program to symbolize
+ * @return t_symbolizer 
+ */
 t_symbolizer symbolizer_init(char *program_path)
 {
     char options[1024] = {0};
@@ -127,6 +140,11 @@ t_symbolizer symbolizer_init(char *program_path)
     return new_symbolizer;
 }
 
+/**
+ * @brief Stop the symbolizer.
+ * 
+ * @param symbolizer the symbolizer to stop
+ */
 void symbolizer_stop(t_symbolizer *symbolizer)
 {
     fclose(symbolizer->read_file);
@@ -134,6 +152,14 @@ void symbolizer_stop(t_symbolizer *symbolizer)
     waitpid(symbolizer->pid_symbolizer, NULL, 0);
 }
 
+
+/**
+ * @brief This function will get the address info from the symbolizer.
+ * 
+ * @param symbolizer the symbolizer
+ * @param address_list the address list to symbolize
+ * @param address_infos the symbolized address list
+ */
 void symbolizer_get_address_info(
     t_symbolizer *symbolizer,
     const ptr_address *address_list,

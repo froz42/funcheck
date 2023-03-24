@@ -10,6 +10,9 @@
 #include "../logs/logs.h"
 #include "../utils/bool.h"
 #include "../env/env.h"
+#include "../config/config.h"
+#include "../symbolizer/symbolizer.h"
+#include "runner.h"
 
 #define RELATIVE_LIBRARY_PATH "../library/libfuncheck.so"
 
@@ -42,6 +45,12 @@ static char *get_library_path(void)
     return path;
 }
 
+/**
+ * @brief Generate resources for the runner
+ * 
+ * @param envp the environment variables
+ * @return t_runner_setup the runner setup
+ */
 t_runner_setup setup_runner(char **envp)
 {
     char *memory_name = generate_memory_name();
@@ -60,6 +69,11 @@ t_runner_setup setup_runner(char **envp)
     return result;
 }
 
+/**
+ * @brief Free the resources of the runner
+ * 
+ * @param result the runner setup
+ */
 void free_runner_setup(t_runner_setup *result)
 {
     free_shared_memory(result->memory_name, result->shared_memory);
@@ -67,6 +81,29 @@ void free_runner_setup(t_runner_setup *result)
     free(result->env_memory_name);
     free(result->env_shared_library);
     free(result->new_envp);
+}
+
+/**
+ * @brief Get the crash infos from the shared memory
+ * 
+ * @param shared_memory the shared memory between the host and the library 
+ * @param symbolizer the symbolizer
+ * @return t_crash_info the crash infos
+ */
+t_crash_info get_crash_infos(
+    t_shared_info *shared_memory,
+    t_symbolizer *symbolizer)
+{
+    t_crash_info crash_infos = {0};
+    if (shared_memory->event == CRASH)
+    {
+        crash_infos.crash_name = shared_memory->function_name;
+        crash_infos.backtrace = backtrace_process(
+            NULL,
+            symbolizer,
+            shared_memory->backtrace);
+    }
+    return crash_infos;
 }
 
 /**
@@ -85,19 +122,19 @@ int run(t_run_info *run_info)
 	if (pid == 0)
 	{
 		// dup the end of the pipe to stdin
-		if (run_info->pipe_to_stdin[0] != -1)
+		if (run_info->pipe_to_stdin[0] != NO_FD)
 		{
 			close(run_info->pipe_to_stdin[1]);
 			dup2(run_info->pipe_to_stdin[0], STDIN_FILENO);
 			close(run_info->pipe_to_stdin[0]);
 		}
-		if (run_info->pipe_to_stdout[1] != -1)
+		if (run_info->pipe_to_stdout[1] != NO_FD)
 		{
 			close(run_info->pipe_to_stdout[0]);
 			dup2(run_info->pipe_to_stdout[1], STDOUT_FILENO);
 			close(run_info->pipe_to_stdout[1]);
 		}
-		if (run_info->pipe_to_stderr[1] != -1)
+		if (run_info->pipe_to_stderr[1] != NO_FD)
 		{
 			close(run_info->pipe_to_stderr[0]);
 			dup2(run_info->pipe_to_stderr[1], STDERR_FILENO);
