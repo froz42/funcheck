@@ -24,6 +24,8 @@
 #include "../events/handle_event.h"
 #include "../run/runner.h"
 #include "../output/output.h"
+#include "../time/time.h"
+#include "functions_test.h"
 
 static args_t _arg_guest;
 static char **_envp;
@@ -298,14 +300,19 @@ static void function_test(t_function_call_footprint *function_info)
  * @param envp the environment of the guest program
  * @param fetch_result the fetch result
  * @param symbolizer the symbolizer
- * @return size_t the number of failed tests
+ * @return function_tests_result_t the number of failed tests, the number
+ *  of total tests and the time
  */
-size_t functions_test(
+function_tests_result_t functions_test(
     args_t arg_guest,
     char **envp,
-    t_fetch_result *fetch_result,
+    t_fetch_result *
+        fetch_result,
     t_symbolizer *symbolizer)
 {
+    timeval_t start;
+    msseconds_t _lapse;
+    start = get_time();
     _arg_guest = arg_guest;
     _envp = envp;
     _symbolizer = symbolizer;
@@ -314,5 +321,11 @@ size_t functions_test(
     _function_test_fail = 0;
     _function_test_total_size = count_testable_functions(fetch_result->function_tree);
     btree_t_function_call_footprint_foreach(fetch_result->function_tree, function_test);
-    return _function_test_fail;
+    _lapse = get_timelapse(start);
+    function_tests_result_t result = {
+        .nb_total_tests = _function_test_total_size,
+        .nb_failed_tests = _function_test_fail,
+        .time_laps = _lapse,
+        };
+    return result;
 }

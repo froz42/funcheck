@@ -27,7 +27,7 @@ static void write_crash_end()
 {
     json_write_object_end(1, false);
     write_head_function_tests();
-    write_tail_function_tests(false);
+    write_tail_function_tests(NULL);
     json_write_object_end(0, true);
 }
 

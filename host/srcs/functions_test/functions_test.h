@@ -19,8 +19,17 @@
 #define FUNCTIONS_TEST_H
 
 #include "../functions_fetch/functions_fetch.h"
+#include "../time/time.h"
 
-size_t functions_test(
+typedef struct
+{
+    size_t nb_total_tests;
+    size_t nb_failed_tests;
+    msseconds_t time_laps;
+
+} function_tests_result_t;
+
+function_tests_result_t functions_test(
     args_t arg_guest,
     char **envp,
     t_fetch_result *fetch_result,

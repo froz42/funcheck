@@ -25,7 +25,7 @@
 /**
  * @brief Write the fail fetch result in pretty format
  * 
- * @param fetch_result_display the fetch result to write
+ * @param t_fetch_result_display the fetch result to write
  */
 static void write_fetch_result_success(t_fetch_result_display *fetch_result_display)
 {
@@ -38,6 +38,7 @@ static void write_fetch_result_success(t_fetch_result_display *fetch_result_disp
         fetch_result_display->crash_name,
         RESET);
     backtrace_print_pretty(fetch_result_display->backtrace);
+    printf("\nNo test ran because of a crash in functions fetching\n");
 }
 
 /**
