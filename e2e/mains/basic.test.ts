@@ -1,3 +1,20 @@
+/* Funcheck - A tool for checking functions calls return protections
+ * Copyright (C) 2023  Theo Matis
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import buildAndRun, { OUTPUT_NAME } from '../src/build-and-run';
 import { FuncheckType } from '../src/types/funcheck.type';
 
@@ -18,7 +35,7 @@ describe(FILE_NAME, () => {
     });
 
     it('should have a valid program name', () => {
-      expect(outputObject.program).toBe(OUTPUT_NAME);
+      expect(outputObject.program).toBe('fail');
     });
 
     it('should have a valid arguments', () => {
@@ -34,7 +51,7 @@ describe(FILE_NAME, () => {
     });
 
     it('should have a valid output', () => {
-      expect(functionFetch.output).toBe("Hello world\n")
+      expect(functionFetch.output).toBe('Hello world\n');
     });
 
     it('should have a valid return code', () => {
@@ -70,10 +87,10 @@ describe(FILE_NAME, () => {
 
       it('should have a valid function backtrace', () => {
         expect(functionTest['function-backtrace']).toBeDefined();
-        
+
         const functionBacktrace = functionTest['function-backtrace'];
         expect(functionBacktrace.length).toBe(1);
-        
+
         const backtrace = functionBacktrace[0];
         expect(backtrace.address).toBeDefined();
         expect(backtrace.function).toBe('main');
