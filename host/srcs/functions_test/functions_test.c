@@ -306,8 +306,7 @@ static void function_test(t_function_call_footprint *function_info)
 function_tests_result_t functions_test(
     args_t arg_guest,
     char **envp,
-    t_fetch_result *
-        fetch_result,
+    t_fetch_result *fetch_result,
     t_symbolizer *symbolizer)
 {
     timeval_t start;
