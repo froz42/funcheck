@@ -56,6 +56,8 @@ static void print_function_test_result_time(function_tests_result_t *functions_t
  */
 static void print_function_test_result_success_rate(function_tests_result_t *functions_tests_result)
 {
+    if (functions_tests_result->nb_total_tests == 0)
+        return;
     size_t success_rate = (functions_tests_result->nb_total_tests - functions_tests_result->nb_failed_tests) * 100 / functions_tests_result->nb_total_tests;
     printf("%sSuccess rate:%s   %zu %%\n",
            BOLD,
@@ -65,14 +67,14 @@ static void print_function_test_result_success_rate(function_tests_result_t *fun
 
 void write_tail_function_tests_pretty(function_tests_result_t *functions_tests_result)
 {
-    if (functions_tests_result->nb_total_tests == 0)
-        printf("%sNo test ran%s\n", GRAY, RESET);
-    else if (!functions_tests_result->nb_failed_tests)
+    if (functions_tests_result->nb_total_tests && !functions_tests_result->nb_failed_tests)
         print_function_test_result_success(functions_tests_result);
-    else
+    else if (functions_tests_result->nb_total_tests)
         print_function_test_result_failed(functions_tests_result);
     print_function_test_result_time(functions_tests_result);
     print_function_test_result_success_rate(functions_tests_result);
-    printf("%sAll tests ran%s\n", GRAY, RESET);
-    ;
+    if (functions_tests_result->nb_total_tests == 0)
+        printf("%sNo test ran%s\n", GRAY, RESET);
+    else
+        printf("%sAll tests ran%s\n", GRAY, RESET);
 }
