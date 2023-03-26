@@ -72,7 +72,7 @@ static t_records setup_record_io(t_pipes *pipes, bool_t record_output_enabled)
     records.record_stdout = init_record_io(pipes->stdout_pipe[0], NO_FD);
     records.record_stderr = init_record_io(pipes->stderr_pipe[0], NO_FD);
 
-    FILE *tmpfile_output;
+    FILE *tmpfile_output = NULL;
 
     if (record_output_enabled)
     {
@@ -168,7 +168,6 @@ static void close_unused_pipes(t_pipes *pipes, bool_t record_output_enabled)
  */
 static void close_remaining_pipes(t_pipes *pipes, bool_t record_output_enabled)
 {
-    close(pipes->stdin_pipe[1]);
     if (record_output_enabled)
     {
         close(pipes->stdout_pipe[1]);
@@ -199,7 +198,8 @@ static int run_function_test(
     int status = 0;
     pid_t pid = run(run_infos);
     close_unused_pipes(pipes, record_output_enabled);
-    write_record_to_fd(records->record_stdin.fd_to_write, _tmpfile_stdin);
+    write_record_to_fd(pipes->stdin_pipe[1], _tmpfile_stdin);
+    close(pipes->stdin_pipe[1]);
     if (waitpid(pid, &status, 0) < 0)
         log_fatal("run_function_test: waitpid failed", true);
     stop_handle_events(event_thread, params->shared_memory);
