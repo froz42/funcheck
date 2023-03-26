@@ -54,7 +54,8 @@ static const t_symbolizer_config *get_symbolizer_config(void)
         if (is_program_in_path(symbolizer_config[i].symbolizer_name))
             return &symbolizer_config[i];
     }
-    exit(EXIT_FAILURE);
+    log_fatal("No symbolizer found", false);
+    return NULL; /* never reached */
 }
 
 /**
