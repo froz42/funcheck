@@ -46,6 +46,8 @@ Funcheck is a tool for checking functions calls return protections. It check if 
 making each call fail one by one and check if the program doesn't crash and handle the errors.
 **This tool only works on Linux for now.**
 
+You can see the list of handled functions and how to add new ones here: [PROTECTIONS.md](https://github.com/tmatis/funcheck/blob/main/PROTECTIONS.md)
+
 ## Getting Started
 
 ### Run requirements
