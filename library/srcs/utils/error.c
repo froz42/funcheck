@@ -28,5 +28,5 @@ void raise_error(const char *message, bool_t show_errno)
         dprintf(STDERR_FILENO, "[FUNCHECK LIBRARY] [FATAL ERROR] %s: %s\n", message, strerror(errno));
     else
         dprintf(STDERR_FILENO, "[FUNCHECK LIBRARY] [FATAL ERROR] %s\n", message);
-    abort();
+    exit(EXIT_FAILURE);
 }
