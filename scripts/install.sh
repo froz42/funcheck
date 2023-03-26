@@ -120,7 +120,7 @@ if [[ $SAVE_REPLY =~ ^[Tt]$ ]]; then
     echo "funcheck is temporarily installed in /tmp/funcheck"
     echo "You can now use funcheck in $SHELL for the current session"
     echo "funcheck will be deleted when you exit $SHELL"
-    echo "To use funcheck permanently, run $0"
+    echo "To use funcheck permanently, run the installer again and choose option I"
     $SHELL
     echo -n "Deleting temporary directory ... "
     rm -rf /tmp/funcheck
