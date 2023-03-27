@@ -20,7 +20,6 @@
 #include "../../config/config.h"
 #include "../utils/output_utils.h"
 
-
 /**
  * @brief write a backtrace element
  *
@@ -83,23 +82,15 @@ void write_backtrace_json(
     bool_t is_last,
     t_address_info *backtrace)
 {
-    if (is_json_output_set())
+    t_address_info *processed_backtrace = get_transformed_backtrace(backtrace);
+    json_write_key_array(key, indent_count);
+    for (size_t i = 0; processed_backtrace[i].address; i++)
     {
-        size_t backtrace_size = get_symbolized_backtrace_size(backtrace);
-        config_t *config = get_config();
-        json_write_key_array(key, indent_count);
-        size_t backtrace_count = 0;
-        for (size_t i = 0; backtrace[i].address; i++)
-        {
-            if (is_option_set(COMPLETE_BACKTRACE_MASK, config) ||
-                !should_ignore_function(backtrace[i].function_name))
-            {
-                write_backtrace_element(
-                    indent_count + 1,
-                    ++backtrace_count == backtrace_size,
-                    &backtrace[i]);
-            }
-        }
-        json_write_array_end(indent_count, is_last);
+            write_backtrace_element(
+                indent_count + 1,
+                processed_backtrace[i + 1].address == 0,
+                &processed_backtrace[i]);
     }
+    json_write_array_end(indent_count, is_last);
+    free(processed_backtrace);
 }

@@ -45,6 +45,7 @@ SRCS	= 	main.c \
 			json/json.c \
 			output/output.c \
 			output/utils/output_utils.c \
+			output/utils/backtrace.c \
 			output/loading_bar/loading_bar.c \
 			output/pretty/pretty_header.c \
 			output/pretty/pretty_fetch_result.c \
