@@ -32,19 +32,18 @@ static void write_margin(size_t indent_count)
 
 /**
  * @brief Write the backtrace in pretty format
- * 
+ *
  * @param address_info backtrace element to write
- * @param backtrace_size 
- * @param backtrace_count 
+ * @param backtrace_size
+ * @param backtrace_count
  */
 static void backtrace_print_elem(
     t_address_info *address_info,
-    size_t backtrace_size,
-    size_t backtrace_count)
+    bool_t is_last)
 {
 
     const char *cross_line = "┳";
-    if (backtrace_count == backtrace_size)
+    if (is_last)
         cross_line = "━";
 
     printf(
@@ -71,17 +70,14 @@ static void backtrace_print_elem(
  */
 void backtrace_print_pretty(t_address_info *backtrace)
 {
-    config_t *config = get_config();
-    size_t backtrace_size = get_symbolized_backtrace_size(backtrace);
+    t_address_info *processed_backtrace = get_transformed_backtrace(backtrace);
     size_t backtrace_count = 0;
-    for (size_t i = 0; backtrace[i].address != 0; i++)
+    for (size_t i = 0; processed_backtrace[i].address != 0; i++)
     {
-        t_address_info *address_info = &backtrace[i];
-        if (!is_option_set(COMPLETE_BACKTRACE_MASK, config) &&
-            should_ignore_function(address_info->function_name))
-            continue;
+        t_address_info *address_info = &processed_backtrace[i];
         write_margin(backtrace_count++ * 2);
 
-        backtrace_print_elem(address_info, backtrace_size, backtrace_count);
+        backtrace_print_elem(address_info, processed_backtrace[i + 1].address == 0);
     }
+    free(processed_backtrace);
 }

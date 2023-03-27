@@ -50,27 +50,6 @@ size_t count_allocations_functions(btree_t_function_call_footprint *function_tre
 }
 
 /**
- * @brief Get the backtrace size of symbolized elements
- *
- * @param backtrace the backtrace
- * @return size_t the size of the backtrace
- */
-size_t get_symbolized_backtrace_size(t_address_info *backtrace)
-{
-    size_t size_backtrace = 0;
-    config_t *config = get_config();
-    for (size_t i = 0; backtrace[i].address; i++)
-    {
-        if (is_option_set(COMPLETE_BACKTRACE_MASK, config) ||
-            !should_ignore_function(backtrace[i].function_name))
-        {
-            size_backtrace++;
-        }
-    }
-    return size_backtrace;
-}
-
-/**
  * @brief Write a delimiter bar
  *
  */
