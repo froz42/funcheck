@@ -11,8 +11,8 @@ static size_t get_complete_backtrace_size(t_address_info *backtrace)
 {
     size_t size_backtrace = 0;
 
-    while (backtrace->address)
-        backtrace++;
+    while (backtrace[size_backtrace].address)
+        size_backtrace++;
     return size_backtrace;
 }
 
