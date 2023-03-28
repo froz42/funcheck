@@ -124,4 +124,5 @@ void write_allocation_track_pretty(
         backtrace_print_pretty(backtrace);
     }
     btree_t_function_call_footprint_foreach(function_tree, write_allocation_track_element);
+    printf("\n");
 }
