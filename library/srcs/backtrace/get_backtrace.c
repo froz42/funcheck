@@ -49,7 +49,7 @@ static void process_addresses(void **backtrace_buffer, int backtrace_size)
 		// since it's already relative
 		// we just need to substract 1 to the address to
 		// get the right address
-		if (backtrace_buffer[i] < (void *)MAGIC_LIMIT_RELATIVE_ADDRESS)
+		if (backtrace_buffer[i] < MAGIC_LIMIT_RELATIVE_ADDRESS)
 			backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - 1);
 		else
 		{
