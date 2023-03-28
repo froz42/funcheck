@@ -54,6 +54,7 @@ typedef struct s_shared_info
 {
 	t_runtype runtype;
 	ptr_address backtrace[MAX_BACKTRACE_DEPTH];
+	size_t iteration_to_test;
 	char function_name[256];
 	bool_t should_test;
 	t_allocation_data allocation;

@@ -33,7 +33,9 @@ t_shared_info *setup()
     t_shared_info *shared_memory = init_shared_memory();
     setup_hooks();
     if (shared_memory->runtype == RUNTYPE_TEST)
-        set_backtrace_to_block(shared_memory->backtrace, 0);
+        set_backtrace_to_block(
+            shared_memory->backtrace,
+            shared_memory->iteration_to_test);
     setvbuf(stdout, NULL, _IONBF, 0);
     unsetenv("LD_PRELOAD");
     unsetenv(ENV_MEMORY_NAME);

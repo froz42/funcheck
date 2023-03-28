@@ -185,7 +185,7 @@ bool_t should_block(ptr_address *backtrace)
 			return false;
 		i++;
 	}
-	if (_iteration_to_block++ == _current_iteration)
+	if (_iteration_to_block == _current_iteration++)
 		return true;
 	return false;
 }
