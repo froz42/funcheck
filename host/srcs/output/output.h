@@ -56,5 +56,9 @@ void write_function_fetch_result(
     t_fetch_result_display *fetch_result_display);
 void write_test_result(t_test_result_display *result, bool_t is_last);
 void write_tail(void);
+void write_current_test(
+    char *function_name,
+    size_t iteration,
+    t_address_info *function_backtrace);
 
 #endif

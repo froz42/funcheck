@@ -30,5 +30,8 @@ void write_function_fetch_result_pretty(
     t_fetch_result_display *fetch_result_display);
 void write_test_result_pretty(t_test_result_display *result);
 void write_tail_function_tests_pretty(function_tests_result_t *functions_tests_result);
-
+void write_current_test_pretty(
+    char *function_name,
+    size_t iteration,
+    t_address_info *function_backtrace);
 #endif

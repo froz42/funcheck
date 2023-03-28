@@ -125,3 +125,19 @@ void write_tail(void)
     if (is_json_output_set())
         json_write_object_end(0, true);
 }
+
+/**
+ * @brief Write the current test
+ * 
+ * @param function_name the name of the tested function
+ * @param iteration the iteration of the test
+ * @param function_backtrace the backtrace of the tested function
+ */
+void write_current_test(
+    char *function_name,
+    size_t iteration,
+    t_address_info *function_backtrace)
+{
+    if (!is_json_output_set())
+        write_current_test_pretty(function_name, iteration, function_backtrace);
+}

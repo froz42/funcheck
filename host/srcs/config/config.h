@@ -29,6 +29,7 @@
 #define HELP_MASK 1 << 4
 #define ABORT_AS_CRASH_MASK 1 << 5
 #define COMPLETE_BACKTRACE_MASK 1 << 6
+#define SHOW_CURRENT_TEST_MASK 1 << 7
 
 typedef char *char_ptr;
 
