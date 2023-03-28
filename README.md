@@ -125,6 +125,7 @@ funcheck [OPTIONS] ./program [PROGRAM PARAMETERS]
 - `-o, --all-output` : Output stdout and stderr of every test
 - `-c, --abort-as-crash` : Treat abort() as a crash
 - `-b, --complete-backtrace` :  Keep unknowns functions and utils functions in backtrace
+- `-s  --show-current-test` : Show the current actually processed by funcheck
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
