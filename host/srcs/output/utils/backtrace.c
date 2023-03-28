@@ -93,6 +93,7 @@ t_address_info *get_transformed_backtrace(t_address_info *backtrace)
         main_index--;
         i--;
     }
+    transformed_backtrace[size_backtrace].address = 0x0;
 
     return transformed_backtrace;
 }
