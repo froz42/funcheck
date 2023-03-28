@@ -45,10 +45,12 @@ static bool_t _function_test_fail;
 static void config_shared_memory_test(
     t_shared_info *shared_infos,
     t_address_info *backtrace,
+    size_t iteration_to_test,
     const config_t *config)
 {
     shared_infos->treat_abort_as_crash = is_option_set(ABORT_AS_CRASH_MASK, config);
     shared_infos->runtype = RUNTYPE_TEST;
+    shared_infos->iteration_to_test = iteration_to_test;
     sem_destroy(&shared_infos->lock_host);
     sem_destroy(&shared_infos->lock_guest);
     sem_init(&shared_infos->lock_host, 1, 0);
@@ -229,16 +231,10 @@ static void clear_function_test(
     free(crash_info->backtrace);
 }
 
-/**
- * @brief Test a function
- *
- * @param function_info the function info
- */
-static void function_test(t_function_call_footprint *function_info)
+static void function_test(
+    t_function_call_footprint *function_info,
+    size_t iteration_to_test)
 {
-    if (!function_info->should_test)
-        return;
-    _function_test_count++;
     timeval_t start_time = get_time();
     const config_t *config = get_config();
     btree_t_function_call_footprint *function_tree = NULL;
@@ -247,14 +243,16 @@ static void function_test(t_function_call_footprint *function_info)
     if (is_option_set(SHOW_CURRENT_TEST_MASK, config))
         write_current_test(
             function_info->function_name,
-            0,
+            iteration_to_test,
             function_info->backtrace);
     t_pipes pipes = setup_pipes(record_output_enabled);
     t_records records = setup_record_io(&pipes, record_output_enabled);
     t_runner_setup runner_setup = setup_runner(_envp);
     config_shared_memory_test(
         runner_setup.shared_memory,
-        function_info->backtrace, config);
+        function_info->backtrace,
+        iteration_to_test,
+        config);
     t_handle_event_params params = {
         .function_tree = &function_tree,
         .shared_memory = runner_setup.shared_memory,
@@ -299,6 +297,21 @@ static void function_test(t_function_call_footprint *function_info)
 }
 
 /**
+ * @brief Test a function
+ *
+ * @param function_info the function info
+ */
+static void function_test_callback(t_function_call_footprint *function_info)
+{
+    if (!function_info->should_test)
+        return;
+    _function_test_count++;
+    function_test(function_info, 0);
+    if (function_info->call_count > 1)
+        function_test(function_info, 1);
+}
+
+/**
  * @brief Test all functions
  *
  * @param arg_guest the arguments of the guest program
@@ -324,7 +337,7 @@ function_tests_result_t functions_test(
     _function_test_count = 0;
     _function_test_fail = 0;
     _function_test_total_size = count_testable_functions(fetch_result->function_tree);
-    btree_t_function_call_footprint_foreach(fetch_result->function_tree, function_test);
+    btree_t_function_call_footprint_foreach(fetch_result->function_tree, function_test_callback);
     _lapse = get_timelapse(start);
     function_tests_result_t result = {
         .nb_total_tests = _function_test_total_size,
