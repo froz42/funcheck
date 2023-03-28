@@ -67,6 +67,7 @@ static void print_function_test_result_success_rate(function_tests_result_t *fun
 
 void write_tail_function_tests_pretty(function_tests_result_t *functions_tests_result)
 {
+    printf("\n");
     if (functions_tests_result->nb_total_tests && !functions_tests_result->nb_failed_tests)
         print_function_test_result_success(functions_tests_result);
     else if (functions_tests_result->nb_total_tests)

@@ -93,7 +93,6 @@ void write_test_result_pretty(t_test_result_display *result)
             result->function_tree,
             result->function_name,
             result->function_backtrace);
-        fprintf(stdout, "\n");
     }
 
     if (is_option_set(SHOW_CURRENT_TEST_MASK, config))

@@ -27,7 +27,7 @@
  * 
  * @param t_fetch_result_display the fetch result to write
  */
-static void write_fetch_result_success(t_fetch_result_display *fetch_result_display)
+static void write_fetch_result_fail(t_fetch_result_display *fetch_result_display)
 {
     fprintf(stdout, "\n");
     fprintf(
@@ -46,7 +46,7 @@ static void write_fetch_result_success(t_fetch_result_display *fetch_result_disp
  * 
  * @param fetch_result_display the fetch result to write
  */
-static void write_fetch_result_fail(t_fetch_result_display *fetch_result_display)
+static void write_fetch_result_success(t_fetch_result_display *fetch_result_display)
 {
     char buffer[1024];
 
@@ -81,7 +81,7 @@ void write_function_fetch_result_pretty(
     log_task("Testable functions fetching", task_end);
 
     if (fetch_result_display->crash_name)
-        write_fetch_result_success(fetch_result_display);
-    else
         write_fetch_result_fail(fetch_result_display);
+    else
+        write_fetch_result_success(fetch_result_display);
 }
