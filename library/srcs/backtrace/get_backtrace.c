@@ -35,7 +35,7 @@
 
 /**
  * @brief Transform the addresses in the backtrace buffer to relative addresses.
- * 
+ *
  * @param backtrace_buffer the buffer containing the addresses (also the destination)
  * @param backtrace_size the size of the buffer
  */
@@ -47,19 +47,24 @@ static void process_addresses(void **backtrace_buffer, int backtrace_size)
 		// if we have an address bellow 0x1000000
 		// we dont need to calculate the relative address
 		// since it's already relative
+		// we just need to substract 1 to the address to
+		// get the right address
 		if (backtrace_buffer[i] < (void *)MAGIC_LIMIT_RELATIVE_ADDRESS)
-			continue;
-		Dl_info info;
-		if (!dladdr(backtrace_buffer[i], &info))
-			raise_error("process_addresses: dladdr", true);
-		backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - (size_t)info.dli_fbase - 1);
+			backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - 1);
+		else
+		{
+			Dl_info info;
+			if (!dladdr(backtrace_buffer[i], &info))
+				raise_error("process_addresses: dladdr", true);
+			backtrace_buffer[i] = (void *)((size_t)backtrace_buffer[i] - (size_t)info.dli_fbase - 1);
+		}
 	}
 	backtrace_buffer[i] = NULL;
 }
 
 /**
  * @brief Get the backtrace of the current thread.
- * 
+ *
  * @param dest the destination buffer
  */
 void get_backtrace(ptr_address dest[MAX_BACKTRACE_DEPTH])
