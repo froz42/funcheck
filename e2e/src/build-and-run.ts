@@ -25,7 +25,7 @@ const FUNCHECK_PATH = '../host/funcheck';
 const JSON_OPTION = '--json-output';
 
 const DEFAULT_BUILDER_OPTS: BuilderProperty = {
-  cc: 'gcc',
+  cc: 'clang',
   flags: ['-g', '-Wall', '-Wextra', '-Werror'],
 };
 
