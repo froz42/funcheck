@@ -96,22 +96,22 @@ void write_test_result_pretty(t_test_result_display *result)
         fprintf(stdout, "\n");
     }
 
-    if (!is_option_set(ALL_OUTPUT_MASK, config))
-    {
-        if (!is_a_tty())
-            return;
-        compute_mean_run_time(result);
+    if (is_option_set(SHOW_CURRENT_TEST_MASK, config))
+        return;
+    if (is_option_set(ALL_OUTPUT_MASK, config))
+        return write_delim_bar();
 
-        const size_t remaining_test = result->total_tests - result->actual_test;
-        const msseconds_t remaining_time = _mean_run_time * remaining_test;
-        // if less than 1 second remaining, we don't display the time
-        erase_line();
-        if (remaining_time > 1000)
-            write_loading_bar(
-                result->actual_test,
-                result->total_tests,
-                remaining_time);
-    }
-    else
-        write_delim_bar();
+    if (!is_a_tty())
+        return;
+    compute_mean_run_time(result);
+
+    const size_t remaining_test = result->total_tests - result->actual_test;
+    const msseconds_t remaining_time = _mean_run_time * remaining_test;
+    // if less than 1 second remaining, we don't display the time
+    erase_line();
+    if (remaining_time > 1000)
+        write_loading_bar(
+            result->actual_test,
+            result->total_tests,
+            remaining_time);
 }

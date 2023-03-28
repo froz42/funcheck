@@ -231,7 +231,7 @@ static void clear_function_test(
 
 /**
  * @brief Test a function
- * 
+ *
  * @param function_info the function info
  */
 static void function_test(t_function_call_footprint *function_info)
@@ -244,6 +244,11 @@ static void function_test(t_function_call_footprint *function_info)
     btree_t_function_call_footprint *function_tree = NULL;
     bool_t record_output_enabled =
         !is_option_set(ALL_OUTPUT_MASK, config) || is_option_set(JSON_OUTPUT_MASK, config);
+    if (is_option_set(SHOW_CURRENT_TEST_MASK, config))
+        write_current_test(
+            function_info->function_name,
+            0,
+            function_info->backtrace);
     t_pipes pipes = setup_pipes(record_output_enabled);
     t_records records = setup_record_io(&pipes, record_output_enabled);
     t_runner_setup runner_setup = setup_runner(_envp);
@@ -295,7 +300,7 @@ static void function_test(t_function_call_footprint *function_info)
 
 /**
  * @brief Test all functions
- * 
+ *
  * @param arg_guest the arguments of the guest program
  * @param envp the environment of the guest program
  * @param fetch_result the fetch result
@@ -325,6 +330,6 @@ function_tests_result_t functions_test(
         .nb_total_tests = _function_test_total_size,
         .nb_failed_tests = _function_test_fail,
         .time_laps = _lapse,
-        };
+    };
     return result;
 }

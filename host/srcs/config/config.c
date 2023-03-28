@@ -108,6 +108,7 @@ static const option_t options[] = {
     {'o', "all-output", "Output stdout and stderr of every test", ALL_OUTPUT_MASK, NULL},
     {'c', "abort-as-crash", "Treat abort() as a crash", ABORT_AS_CRASH_MASK, NULL},
     {'b', "complete-backtrace", "Keep unknowns functions and utils functions in backtrace", COMPLETE_BACKTRACE_MASK, NULL},
+    {'s', "show-current-test", "Show the current test", SHOW_CURRENT_TEST_MASK, NULL},
     {0, NULL, NULL, 0, NULL}};
 
 /**
