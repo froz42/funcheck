@@ -31,6 +31,7 @@
 #include "../hook/hook.h"
 
 #define FALLBACK_MAIN_POS 2
+#define MAGIC_LIMIT_RELATIVE_ADDRESS (void *)0x1000000
 
 /**
  * @brief Transform the addresses in the backtrace buffer to relative addresses.
@@ -43,6 +44,11 @@ static void process_addresses(void **backtrace_buffer, int backtrace_size)
 	int i;
 	for (i = 0; i < backtrace_size; i++)
 	{
+		// if we have an address bellow 0x1000000
+		// we dont need to calculate the relative address
+		// since it's already relative
+		if (backtrace_buffer[i] < (void *)MAGIC_LIMIT_RELATIVE_ADDRESS)
+			continue;
 		Dl_info info;
 		if (!dladdr(backtrace_buffer[i], &info))
 			raise_error("process_addresses: dladdr", true);
