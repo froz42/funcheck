@@ -168,6 +168,7 @@ void symbolizer_stop(t_symbolizer *symbolizer)
 {
     fclose(symbolizer->read_file);
     close(symbolizer->write_fd);
+    kill(symbolizer->pid_symbolizer, SIGKILL);
     waitpid(symbolizer->pid_symbolizer, NULL, 0);
 }
 
