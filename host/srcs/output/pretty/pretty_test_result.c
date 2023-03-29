@@ -106,9 +106,9 @@ void write_test_result_pretty(t_test_result_display *result)
 
     const size_t remaining_test = result->total_tests - result->actual_test;
     const msseconds_t remaining_time = _mean_run_time * remaining_test;
-    // if less than 1 second remaining, we don't display the time
     erase_line();
-    if (remaining_time > 1000)
+    // if it's the last test, we don't need to show the loading bar
+    if (result->total_tests - result->actual_test > 1)
         write_loading_bar(
             result->actual_test,
             result->total_tests,
