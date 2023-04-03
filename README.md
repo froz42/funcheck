@@ -67,32 +67,32 @@ If you you want to update the tool, you can run the same command.
 
 You can now use the `funcheck` command. (run `funcheck --help` for more information how to use it)
 
-### Build instructions
+## Build instructions
 
-#### Requirements
+### Requirements
 
 - A modern version of `gcc`
 - `make`
 
-#### Build
+### Build
 
 You need to build both the `funcheck` binary and the `libfuncheck.so` library.
 
-##### Clone the repository
+#### Clone the repository
 
 ```bash
 git clone https://github.com/tmatis/funcheck.git
 cd funcheck
 ```
 
-##### Build the `libfuncheck.so` library
+#### Build the `libfuncheck.so` library
 
 ```bash
 cd library
 make
 ```
 
-##### Build the `funcheck` binary
+#### Build the `funcheck` binary
 
 ```bash
 cd ../host
