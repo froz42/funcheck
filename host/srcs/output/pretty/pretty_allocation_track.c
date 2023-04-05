@@ -20,6 +20,7 @@
 #include "../utils/output_utils.h"
 #include "../../logs/logs.h"
 #include "pretty_output.h"
+#include "../loading_bar/loading_bar.h"
 
 /**
  * @brief utils passed to foreach to count the number of allocation nodes
@@ -111,6 +112,8 @@ void write_allocation_track_pretty(
     }
     else
     {
+        if (is_a_tty())
+            erase_line();
         fprintf(
             stdout,
             "┏%s %s%s %s when this function is failing allocations are not freed in %s%zu%s contexts \n",
