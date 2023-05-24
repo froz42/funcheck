@@ -116,7 +116,7 @@ void write_allocation_track_pretty(
             erase_line();
         fprintf(
             stdout,
-            "┏%s %s%s %s when this function is failing allocations are not freed in %s%zu%s contexts \n",
+            "┏%s %s%s %s when this function is failing, allocations are not freed in %s%zu%s contexts \n",
             B_GREEN,
             BOLD,
             function_blocked,
