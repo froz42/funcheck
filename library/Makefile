@@ -29,6 +29,7 @@ SRCS	=	backtrace/get_backtrace.c \
 			hook/exit.c \
 			hook/free.c \
 			hook/main.c \
+			hook/mlx.c \
 			hook/functions/unistd.c \
 			hook/functions/stdio.c \
 			hook/functions/fcntl.c \
