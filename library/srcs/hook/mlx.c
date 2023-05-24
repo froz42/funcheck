@@ -23,6 +23,7 @@
 */
 
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "hook.h"
 
 
@@ -76,6 +77,33 @@ GC EXPORT XCreateGC(Display *a, Drawable b, unsigned long c, XGCValues *d)
 	disable_alloc_hooks();
 	typeof(&XCreateGC) original_function = get_original_function();
 	GC result = original_function(a, b, c, d);
+	enable_alloc_hooks();
+	return result;
+}
+
+Atom EXPORT XInternAtom(Display *a, const char *b, Bool c)
+{
+	disable_alloc_hooks();
+	typeof(&XInternAtom) original_function = get_original_function();
+	Atom result = original_function(a, b, c);
+	enable_alloc_hooks();
+	return result;
+}
+
+int EXPORT XShmPixmapFormat(Display *a)
+{
+	disable_alloc_hooks();
+	typeof(&XShmPixmapFormat) original_function = get_original_function();
+	int result = original_function(a);
+	enable_alloc_hooks();
+	return result;
+}
+
+int EXPORT XGetWMNormalHints(Display *a, Window b, XSizeHints *c, long *d)
+{
+	disable_alloc_hooks();
+	typeof(&XGetWMNormalHints) original_function = get_original_function();
+	int result = original_function(a, b, c, d);
 	enable_alloc_hooks();
 	return result;
 }
