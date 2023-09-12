@@ -32,11 +32,6 @@ under certain conditions.
 
 echo "$ASCCI_ART"
 
-if [ ! -t 0 ]; then
-    echo "This script must be run in a terminal"
-    exit 1
-fi
-
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
