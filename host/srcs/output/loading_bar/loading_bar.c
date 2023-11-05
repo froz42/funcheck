@@ -60,7 +60,7 @@ void write_loading_bar(
         i++;
     }
     printf("%s", RESET);
-    const char *time_remaining_str = get_time_string(time_remaining);
+    const char *time_remaining_str = get_time_string(time_remaining * 2);
     printf(
         " %s%s%s (%s%zu%s/%s%zu%s)",
         BOLD,
