@@ -58,7 +58,6 @@ DEFINE_HOOK_FUNCTION(int, vfprintf, EIO, -1, FILE *, stream, const char *, forma
 DEFINE_HOOK_FUNCTION(int, vprintf, EIO, -1, const char *, format, __gnuc_va_list, arg);
 DEFINE_HOOK_FUNCTION(int, vsprintf, EIO, -1, char *, str, const char *, format, __gnuc_va_list, arg);
 DEFINE_HOOK_FUNCTION(int, vsnprintf, EIO, -1, char *, str, size_t, size, const char *, format, __gnuc_va_list, arg);
-DEFINE_HOOK_FUNCTION(int, vasprintf, EIO, -1, char *, str, size_t, size, const char *, format, __gnuc_va_list, arg);
 DEFINE_HOOK_FUNCTION(int, vdprintf, EIO, -1, int, fd, const char *, format, __gnuc_va_list, arg);
 
 /* scanf family */
