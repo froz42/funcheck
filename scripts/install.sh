@@ -62,7 +62,7 @@ echo "Welcome to the funcheck installer!"
 
 echo "Please choose an option:"
 echo "I - Install/update funcheck in $HOME/.local/funcheck (latest version)"
-echo "T - Install funcheck in /tmp/funcheck and open a shell with funcheck in PATH, and delete the directory on exit"
+echo "T - Install funcheck in /tmp/$USER/funcheck and open a shell with funcheck in PATH, and delete the directory on exit"
 echo "U - Uninstall funcheck"
 echo "Q - Quit"
 
@@ -91,34 +91,34 @@ fi
 confirm "Are you sure you want to install funcheck?"
 
 echo -n "Creating temporary host directory ... "
-mkdir -p /tmp/funcheck/host
+mkdir -p /tmp/$USER/funcheck/host
 check_return_code
 
 echo -n "Creating temporary library directory ... "
-mkdir -p /tmp/funcheck/library
+mkdir -p /tmp/$USER/funcheck/library
 check_return_code
 
 echo -n "Downloading host ... "
-wget -O /tmp/funcheck/host/funcheck $HOST_URL &> /dev/null
+wget -O /tmp/$USER/funcheck/host/funcheck $HOST_URL &> /dev/null
 check_return_code
 
 echo -n "Downloading library ... "
-wget -O /tmp/funcheck/library/libfuncheck.so $LIBRARY_URL &> /dev/null
+wget -O /tmp/$USER/funcheck/library/libfuncheck.so $LIBRARY_URL &> /dev/null
 check_return_code
 
 echo -n "Setting permissions ... "
-chmod +x /tmp/funcheck/host/funcheck &> /dev/null
+chmod +x /tmp/$USER/funcheck/host/funcheck &> /dev/null
 check_return_code
 
 if [[ $SAVE_REPLY =~ ^[Tt]$ ]]; then
-    export PATH=/tmp/funcheck/host:$PATH
-    echo "funcheck is temporarily installed in /tmp/funcheck"
+    export PATH=/tmp/$USER/funcheck/host:$PATH
+    echo "funcheck is temporarily installed in /tmp/$USER/funcheck"
     echo "You can now use funcheck in $SHELL for the current session"
     echo "funcheck will be deleted when you exit $SHELL"
     echo "To use funcheck permanently, run the installer again and choose option I"
     $SHELL
     echo -n "Deleting temporary directory ... "
-    rm -rf /tmp/funcheck
+    rm -rf /tmp/$USER/funcheck
     check_return_code
     exit 0
 fi
@@ -133,8 +133,8 @@ echo -n "Creating library directory ... "
 mkdir -p $HOME/.local/funcheck/library
 check_return_code
 
-mv /tmp/funcheck/host/funcheck $HOME/.local/funcheck/host/funcheck
-mv /tmp/funcheck/library/libfuncheck.so $HOME/.local/funcheck/library/libfuncheck.so
+mv /tmp/$USER/funcheck/host/funcheck $HOME/.local/funcheck/host/funcheck
+mv /tmp/$USER/funcheck/library/libfuncheck.so $HOME/.local/funcheck/library/libfuncheck.so
 
 # add the host and library to PATH depending on the shell
 
