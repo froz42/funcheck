@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "../events/event_utils.h"
 #include "../backtrace/backtrace.h"
+#include "../functions_test/functions_test.h"
 
 define_btree_functions(t_allocation, cmp_t_allocation);
 define_btree_functions(t_function_call_footprint, cmp_t_function_call_footprint);
@@ -131,9 +132,9 @@ void remove_allocation(btree_t_function_call_footprint **function_tree, void *pt
  */
 static size_t count_tests(t_function_call_footprint *test_elem)
 {
-    if (test_elem->should_test)
-        return 1;
-    return 0;
+    if (!test_elem->should_test)
+        return 0;
+    return REQUIRED_ITERATIONS(test_elem);
 }
 
 /**

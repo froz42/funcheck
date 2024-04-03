@@ -305,7 +305,8 @@ static void function_test_callback(t_function_call_footprint *function_info)
 {
     if (!function_info->should_test)
         return;
-    _function_test_count++;
+    int to_increment = REQUIRED_ITERATIONS(function_info);
+    _function_test_count += to_increment;
     function_test(function_info, 0);
     if (function_info->call_count > 1)
         function_test(function_info, 1);

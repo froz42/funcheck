@@ -21,6 +21,9 @@
 #include "../functions_fetch/functions_fetch.h"
 #include "../time/time.h"
 
+// 2 iterations are required to test a function that has been called at least twice
+#define REQUIRED_ITERATIONS(function_info) (function_info->call_count > 1) ? 2 : 1
+
 typedef struct
 {
     size_t nb_total_tests;
