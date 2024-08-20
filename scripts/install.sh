@@ -36,8 +36,8 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-HOST_URL="https://github.com/tmatis/funcheck/releases/latest/download/funcheck"
-LIBRARY_URL="https://github.com/tmatis/funcheck/releases/latest/download/libfuncheck.so"
+HOST_URL="https://github.com/froz42/funcheck/releases/latest/download/funcheck"
+LIBRARY_URL="https://github.com/froz42/funcheck/releases/latest/download/libfuncheck.so"
 
 SHELL=$(basename $SHELL)
 

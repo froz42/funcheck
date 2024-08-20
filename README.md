@@ -1,14 +1,14 @@
 <br />
 <div align="center">
-  <a href="https://github.com/tmatis/funcheck">
+  <a href="https://github.com/froz42/funcheck">
     <img src="https://user-images.githubusercontent.com/54767855/227778602-a56ecf02-4d6e-4472-8054-5e2e551eb42e.png" alt="Logo" height="200"/>
   </a>
 
   <p align="center">
     A tool for checking functions calls return protections.
-    <a href="https://github.com/tmatis/funcheck/issues">Report Bug</a>
+    <a href="https://github.com/froz42/funcheck/issues">Report Bug</a>
     ·
-    <a href="https://github.com/tmatis/funcheck/issues">Request Feature</a>
+    <a href="https://github.com/froz42/funcheck/issues">Request Feature</a>
   </p>
 </div>
 
@@ -47,7 +47,7 @@ making each call fail one by one and check if the program doesn't crash and hand
 **This tool only works on Linux for now.**
 ***this tool can have undefined behavior on threaded programs (WIP)**
 
-You can see the list of handled functions and how to add new ones here: [Hooked functions](https://github.com/tmatis/funcheck/wiki/Functions)
+You can see the list of handled functions and how to add new ones here: [Hooked functions](https://github.com/froz42/funcheck/wiki/Functions)
 
 ## Getting Started
 
@@ -59,7 +59,7 @@ You can see the list of handled functions and how to add new ones here: [Hooked 
 ### Quick install
 
 ```bash
-bash -c 'bash <(curl -s https://raw.githubusercontent.com/tmatis/funcheck/main/scripts/install.sh)'
+bash -c 'bash <(curl -s https://raw.githubusercontent.com/froz42/funcheck/main/scripts/install.sh)'
 ```
 
 You can choose to install temporarily, permanently or uninstall the tool.
@@ -81,7 +81,7 @@ You need to build both the `funcheck` binary and the `libfuncheck.so` library.
 #### Clone the repository
 
 ```bash
-git clone https://github.com/tmatis/funcheck.git
+git clone https://github.com/froz42/funcheck.git
 cd funcheck
 ```
 
