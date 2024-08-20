@@ -58,7 +58,6 @@ sem_t *EXPORT sem_open(const char *name, int oflag, ...)
     return ret;
 }
 
-DEFINE_HOOK_FUNCTION(int, sem_close, EAGAIN, -1, sem_t *, sem);
 DEFINE_HOOK_FUNCTION(int, sem_unlink, EAGAIN, -1, const char *, name);
 DEFINE_HOOK_FUNCTION(int, sem_wait, EAGAIN, -1, sem_t *, sem);
 DEFINE_HOOK_FUNCTION(int, sem_trywait, EAGAIN, -1, sem_t *, sem);

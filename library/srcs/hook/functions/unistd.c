@@ -36,8 +36,6 @@ DEFINE_HOOK_FUNCTION(int, faccessat, EACCES, -1, int, dirfd, const char *, name,
 DEFINE_HOOK_FUNCTION(__off_t, lseek, EIO, -1, int, fd, __off_t, offset, int, whence);
 DEFINE_HOOK_FUNCTION(__off64_t, lseek64, EIO, -1, int, fd, __off64_t, offset, int, whence);
 
-DEFINE_HOOK_FUNCTION(int, close, EIO, -1, int, fd);
-
 DEFINE_HOOK_FUNCTION(ssize_t, read, EIO, -1, int, fd, void *, buf, size_t, count);
 DEFINE_HOOK_FUNCTION(ssize_t, write, EIO, -1, int, fd, const void *, buf, size_t, count);
 

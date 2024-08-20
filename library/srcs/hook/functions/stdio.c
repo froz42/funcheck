@@ -27,7 +27,6 @@ DEFINE_HOOK_FUNCTION(int, remove, EACCES, -1, const char *, path);
 DEFINE_HOOK_FUNCTION(int, rename, EACCES, -1, const char *, oldpath, const char *, newpath);
 DEFINE_HOOK_FUNCTION(int, renameat, EACCES, -1, int, olddirfd, const char *, oldpath, int, newdirfd, const char *, newpath);
 DEFINE_HOOK_FUNCTION(int, renameat2, EACCES, -1, int, olddirfd, const char *, oldpath, int, newdirfd, const char *, newpath, unsigned int, flags);
-DEFINE_HOOK_FUNCTION(int, fclose, EIO, EOF, FILE *, stream);
 DEFINE_HOOK_FUNCTION(file_ptr_t, tmpfile, ENOSPC, NULL);
 DEFINE_HOOK_FUNCTION(file_ptr_t, tmpfile64, ENOSPC, NULL);
 DEFINE_HOOK_FUNCTION(char_ptr_t, tmpnam, ENOSPC, NULL, char_array_L_tmpnam_t, s);
@@ -35,7 +34,6 @@ DEFINE_HOOK_FUNCTION(char_ptr_t, tmpnam_r, ENOSPC, NULL, char_array_L_tmpnam_t, 
 DEFINE_HOOK_FUNCTION(char_ptr_t, tempnam, ENOSPC, NULL, const char *, dir, const char *, pfx);
 DEFINE_HOOK_FUNCTION(int, fflush, EIO, EOF, FILE *, stream);
 DEFINE_HOOK_FUNCTION(int, fflush_unlocked, EIO, EOF, FILE *, stream);
-DEFINE_HOOK_FUNCTION(int, fcloseall, EIO, EOF);
 
 DEFINE_HOOK_FUNCTION(file_ptr_t, fopen, EACCES, NULL, const char *, path, const char *, mode);
 DEFINE_HOOK_FUNCTION(file_ptr_t, freopen, EACCES, NULL, const char *, path, const char *, mode, FILE *, stream);
@@ -130,8 +128,6 @@ DEFINE_HOOK_FUNCTION(int, ferror, EIO, 0, FILE *, stream);
 
 DEFINE_HOOK_FUNCTION(int, fileno, EIO, -1, FILE *, stream);
 DEFINE_HOOK_FUNCTION(int, fileno_unlocked, EIO, -1, FILE *, stream);
-
-DEFINE_HOOK_FUNCTION(int, pclose, EIO, -1, FILE *, stream);
 
 DEFINE_HOOK_FUNCTION(file_ptr_t, popen, EIO, NULL, const char *, command, const char *, type);
 
