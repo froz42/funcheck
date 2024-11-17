@@ -33,6 +33,8 @@
 
 #define RELATIVE_LIBRARY_PATH "../library/libfuncheck.so"
 
+#ifndef ABSOLUTE_LIBRARY_PATH
+
 /**
  * @brief Get the absolute path of the library
  * 
@@ -61,6 +63,22 @@ static char *get_library_path(void)
     free(real_path);
     return path;
 }
+
+#else
+
+/**
+ * @brief Get the absolute path of the library
+ * 
+ * @return char* the absolute path of the library
+ * @note Why does this exists ? Because if the packaging needs to force 
+ * 	an library path to be absolute it is needed
+ */
+static char *get_library_path(void)
+{
+	return ABSOLUTE_LIBRARY_PATH;
+}
+
+#endif
 
 /**
  * @brief Generate resources for the runner
