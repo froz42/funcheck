@@ -14,25 +14,44 @@
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
         llvm = pkgs.llvm_18;
+        #commit = pkgs.lib.removeSuffix "-dirty" self.dirtyShortRev;
+        commit = builtins.substring 0 12 (pkgs.lib.removeSuffix "-dirty" self.dirtyRev);
         funcheck_drv = pkgs.stdenv.mkDerivation (final: {
           pname = "funcheck";
-          version = "1.1.4";
+          version = commit;
           src = ./.;
+          patches = [
+            (
+              builtins.toFile
+              "remove_fwrite_unlocked.patch"
+              ''
+                diff --git a/library/srcs/hook/functions/stdio.c b/library/srcs/hook/functions/stdio.c
+                index dbb9e2a..2d6b9dd 100644
+                --- a/library/srcs/hook/functions/stdio.c
+                +++ b/library/srcs/hook/functions/stdio.c
+                @@ -104,7 +104,7 @@ DEFINE_HOOK_FUNCTION(size_t, fwrite, EIO, 0, const void *, ptr, size_t, size, si
+
+                 DEFINE_HOOK_FUNCTION(int, fputs_unlocked, EIO, 0, const char *, s, FILE *, stream);
+                 DEFINE_HOOK_FUNCTION(size_t, fread_unlocked, EIO, 0, void *, ptr, size_t, size, size_t, nmemb, FILE *, stream);
+                -DEFINE_HOOK_FUNCTION(size_t, fwrite_unlocked, EIO, 0, const void *, ptr, size_t, size, size_t, nmemb, FILE *, stream);
+                +//DEFINE_HOOK_FUNCTION(size_t, fwrite_unlocked, EIO, 0, const void *, ptr, size_t, size, size_t, nmemb, FILE *, stream);
+
+                 DEFINE_HOOK_FUNCTION(int, fseek, EIO, -1, FILE *, stream, long, offset, int, whence);
+                 DEFINE_HOOK_FUNCTION(long, ftell, EIO, -1, FILE *, stream);
+
+              ''
+            )
+          ];
           nativeBuildInputs = [pkgs.makeWrapper pkgs.minilibx pkgs.gnumake pkgs.xorg.libX11];
           buildInputs = [llvm];
           buildPhase = ''
-            substituteInPlace host/srcs/run/runner.c \
-             --replace-fail "../library/libfuncheck.so" ""
-
-            # TODO: remove this when I take time to check wtf is happening
-
-            echo "" >library/srcs/hook/functions/stdio.c
+            ls -la
             export CFLAGS="-Werror -Wextra -Wall -Wno-stringop-truncation \
             -Wno-attributes -Wno-array-parameter -Wno-unused-result \
             -DABSOLUTE_LIBRARY_PATH=\\\"$out/share/funcheck/libfuncheck.so\\\" \
             -g -fPIC -fvisibility=hidden"
-            make -C library "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}-nix"
-            make -C host    "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}-nix"
+            make -C library "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}"
+            make -C host    "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}"
           '';
           installPhase = ''
             mkdir -p "$out/bin"
