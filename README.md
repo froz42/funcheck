@@ -67,6 +67,16 @@ If you you want to update the tool, you can run the same command.
 
 You can now use the `funcheck` command. (run `funcheck --help` for more information how to use it)
 
+## Nix flake support
+
+If you have the nix package manager installed, you can run funcheck using this command
+
+```bash
+nix nix --extra-experimental-features "flakes nix-command" run github:froz42/funcheck
+```
+
+this will build funcheck onto your machine, and install llvm-symbolizer (thought it will use the one in your `PATH` by default)
+
 ## Build instructions
 
 ### Requirements
