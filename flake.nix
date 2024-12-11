@@ -14,8 +14,10 @@
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
         llvm = pkgs.llvm_18;
-        #commit = pkgs.lib.removeSuffix "-dirty" self.dirtyShortRev;
-        commit = builtins.substring 0 12 (pkgs.lib.removeSuffix "-dirty" self.dirtyRev);
+        commit = 
+          if self ? rev then builtins.substring 0 12 self.rev
+          else if self ? dirtyRev then builtins.substring 0 12 (pkgs.lib.removeSuffix "-dirty" self.dirtyRev)
+          else "1.1.4";
         funcheck_drv = pkgs.stdenv.mkDerivation (final: {
           pname = "funcheck";
           version = commit;
