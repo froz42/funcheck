@@ -21,6 +21,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include "../config/config.h"
+#include "../logs/logs.h"
 
 /**
  * @brief handle the alloc event
@@ -138,7 +139,8 @@ void stop_handle_events(pthread_t thread, t_shared_info *shared_memory)
 {
     t_event saved_event = shared_memory->event;
     shared_memory->event = EXIT;
-    sem_post(&shared_memory->lock_host);
+    if (sem_post(&shared_memory->lock_host) == -1)
+        log_fatal("stop_handle_events: sem_post", true);
     pthread_join(thread, NULL);
     shared_memory->event = saved_event;
 }
