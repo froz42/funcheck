@@ -67,12 +67,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get libfuncheck.so
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: libfuncheck.so
           path: library
       - name: Get funcheck
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: funcheck
           path: host
@@ -109,12 +109,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get libfuncheck.so
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: libfuncheck.so
           path: library
       - name: Get funcheck
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: funcheck
           path: host
