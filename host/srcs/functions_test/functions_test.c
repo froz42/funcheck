@@ -53,8 +53,10 @@ static void config_shared_memory_test(
     shared_infos->iteration_to_test = iteration_to_test;
     sem_destroy(&shared_infos->lock_host);
     sem_destroy(&shared_infos->lock_guest);
-    sem_init(&shared_infos->lock_host, 1, 0);
-    sem_init(&shared_infos->lock_guest, 1, 0);
+    if (sem_init(&shared_infos->lock_host, 1, 0) == -1)
+        log_fatal("config_shared_memory_test: sem_init failed", true);
+    if (sem_init(&shared_infos->lock_guest, 1, 0) == -1)
+        log_fatal("config_shared_memory_test: sem_init failed", true);
     // copy backtrace
     for (size_t i = 0; i < backtrace[i].address; i++)
         shared_infos->backtrace[i] = backtrace[i].address;

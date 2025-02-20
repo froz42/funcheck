@@ -21,6 +21,7 @@
 #include "../events/event_utils.h"
 #include "../backtrace/backtrace.h"
 #include "../functions_test/functions_test.h"
+#include "../logs/logs.h"
 
 define_btree_functions(t_allocation, cmp_t_allocation);
 define_btree_functions(t_function_call_footprint, cmp_t_function_call_footprint);
@@ -55,6 +56,8 @@ btree_t_function_call_footprint *add_function_call(
         .function_name = strdup(shared_infos->function_name),
         .should_test = shared_infos->should_test
     };
+    if (allocation_info.function_name == NULL)
+        return NULL;
 
     backtrace_process(allocation_info.backtrace, symbolizer, shared_infos->backtrace);
 
@@ -83,6 +86,8 @@ void add_allocation(
         symbolizer,
         function_tree,
         shared_infos);
+    if (node == NULL)
+        log_fatal("add_allocation: strdup failed", true);
     t_allocation allocation = {
         .size = shared_infos->allocation.size,
         .ptr = shared_infos->allocation.ptr};

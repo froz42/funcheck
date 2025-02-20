@@ -89,10 +89,18 @@ static char *get_library_path(void)
 t_runner_setup setup_runner(char **envp)
 {
     char *memory_name = generate_memory_name();
+    if (memory_name == NULL)
+        log_fatal("setup_runner: could not generate memory_name", true);
     char *env_memory_name = generate_env_string(ENV_MEMORY_NAME, memory_name);
+    if (env_memory_name == NULL)
+        log_fatal("setup_runner: could not generate env_memory_name", true);
     char *lib_path = get_library_path();
     char *env_shared_library = generate_env_string("LD_PRELOAD", lib_path);
+    if (env_shared_library == NULL)
+        log_fatal("setup_runner: could not generate env_shared_library", true);
     char **new_envp = generate_envp(envp, env_memory_name, env_shared_library);
+    if (new_envp == NULL)
+        log_fatal("setup_runner: could not generate new_envp", true);
     t_shared_info *shared_memory = generate_shared_memory(memory_name);
 
     t_runner_setup result = {
@@ -160,26 +168,30 @@ int run(t_run_info *run_info)
 		if (run_info->pipe_to_stdin[0] != NO_FD)
 		{
 			close(run_info->pipe_to_stdin[1]);
-			dup2(run_info->pipe_to_stdin[0], STDIN_FILENO);
+			if (dup2(run_info->pipe_to_stdin[0], STDIN_FILENO) < 0)
+                log_fatal("run: dup2 failed", true);
 			close(run_info->pipe_to_stdin[0]);
 		}
 		if (run_info->pipe_to_stdout[1] != NO_FD)
 		{
 			close(run_info->pipe_to_stdout[0]);
-			dup2(run_info->pipe_to_stdout[1], STDOUT_FILENO);
+			if (dup2(run_info->pipe_to_stdout[1], STDOUT_FILENO) < 0)
+                log_fatal("run: dup2 failed", true);
 			close(run_info->pipe_to_stdout[1]);
 		}
 		if (run_info->pipe_to_stderr[1] != NO_FD)
 		{
 			close(run_info->pipe_to_stderr[0]);
-			dup2(run_info->pipe_to_stderr[1], STDERR_FILENO);
+			if(dup2(run_info->pipe_to_stderr[1], STDERR_FILENO) < 0)
+                log_fatal("run: dup2 failed", true);
 			close(run_info->pipe_to_stderr[1]);
 		}
 		int ret = execvpe(run_info->argv[0], run_info->argv, run_info->envp);
 		if (ret < 0)
 		{
 			run_info->shared_info->event = EXIT;
-			sem_post(&run_info->shared_info->lock_host);
+			if(sem_post(&run_info->shared_info->lock_host) == -1)
+                log_fatal("run: sem_post failed", true);
 			log_fatal("run: execvpe failed", true);
 		}
 	}

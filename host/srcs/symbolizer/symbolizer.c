@@ -85,12 +85,16 @@ static char **generate_argv(const char *program_name, char *options)
 
     char *copy_options = strdup(options);
 
-    size_t i = 0;
-    argv[i++] = strdup(program_name);
+    argv[0] = strdup(program_name);
+    if (argv[0] == NULL)
+        log_fatal("generate_argv: strdup failed", true);
+    size_t i = 1;
     char *token = strtok(copy_options, " ");
     while (token)
     {
         argv[i] = strdup(token);
+        if (argv[i] == NULL)
+            log_fatal("generate_argv: strdup failed", true);
         token = strtok(NULL, " ");
         i++;
     }
@@ -135,8 +139,10 @@ t_symbolizer symbolizer_init(char *program_path)
         close(pipe_stdout[0]);
         close(STDIN_FILENO);
         close(STDOUT_FILENO);
-        dup2(pipe_stdin[0], STDIN_FILENO);
-        dup2(pipe_stdout[1], STDOUT_FILENO);
+        if (dup2(pipe_stdin[0], STDIN_FILENO) == -1)
+            log_fatal("symbolizer_init: dup2", true);
+        if (dup2(pipe_stdout[1], STDOUT_FILENO) == -1)
+            log_fatal("symbolizer_init: dup2", true);
         close(pipe_stdin[0]);
         close(pipe_stdout[1]);
 
