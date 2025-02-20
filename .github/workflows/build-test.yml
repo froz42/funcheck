@@ -40,7 +40,7 @@ jobs:
       - name: Make lib
         run: make -C library
       - name: Upload libfuncheck.so
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: libfuncheck.so
           path: library/libfuncheck.so
@@ -53,7 +53,7 @@ jobs:
       - name: Make host
         run: make -C host
       - name: Upload funcheck
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: funcheck
           path: host/funcheck
