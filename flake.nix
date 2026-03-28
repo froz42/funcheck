@@ -45,8 +45,13 @@
 
             '')
           ];
-          nativeBuildInputs = [pkgs.makeWrapper pkgs.minilibx pkgs.gnumake pkgs.xorg.libX11];
-          buildInputs = [llvm];
+          nativeBuildInputs = with pkgs; [
+            makeWrapper
+            minilibx
+            gnumake
+            libX11
+          ];
+          buildInputs = [ llvm ];
           buildPhase = ''
             ls -la
             export CFLAGS="-Werror -Wextra -Wall -Wno-stringop-truncation \
