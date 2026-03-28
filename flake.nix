@@ -56,8 +56,9 @@
             ls -la
             export CFLAGS="-Werror -Wextra -Wall -Wno-stringop-truncation \
             -Wno-attributes -Wno-array-parameter -Wno-unused-result \
+            -Wno-implicit-function-declaration -Wno-int-conversion \
             -DABSOLUTE_LIBRARY_PATH=\\\"$out/share/funcheck/libfuncheck.so\\\" \
-            -g -fPIC -fvisibility=hidden"
+            -g -fPIC -fvisibility=hidden -Wno-deprecated-declarations -std=gnu99"
             make -C library "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}"
             make -C host    "CC=$CC" "CFLAGS=$CFLAGS" "VERSION=${final.version}"
           '';
